@@ -179,7 +179,7 @@ nav button.selected {
 }
 
 #left-panel section > span {
-    margin: 5px 0;
+  padding: 5px 0;
 }
 
 #left-panel .content {
@@ -229,6 +229,11 @@ cursor: pointer;
   background: none;
   border: none;
   color: inherit;
+}
+
+#left-panel .collapse-span {
+  display: inline-block;
+  width: 100%;
 }
 
 #left-panel section.opened {
