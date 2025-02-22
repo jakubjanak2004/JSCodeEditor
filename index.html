@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="JS/main.js" type="module"></script>
+    <title>Code Editor</title>
+  </head>
+  <body>
+    <header>
+      <button class="arrow-button clickable">&larr;</button>
+      <button class="arrow-button">&rarr;</button>
+      <button id="search-button">myCoding</button>
+    </header>
+
+    <section id="editor-container">
+      <!-- left side navigation -->
+      <nav>
+        <section class="up-align">
+          <button class="selected">fldrs</button>
+          <button>next1</button>
+          <button>next2</button>
+        </section>
+        <section class="down-align">
+          <button>prfl</button>
+          <button>stngs</button>
+        </section>
+      </nav>
+      <!-- left panel editor -->
+      <section id="left-panel" data-is-collapsable="true">
+        <h3>EXPLORER</h3>
+        <section id="search">
+          <span>
+            <button class="collapse-button">&gt;</button><span>SEARCH</span>
+          </span>
+          <section class="content">content in the collapsable div</section>
+        </section>
+        <!-- other left panel sections will be added programatically -->
+        <section>
+          <span>
+            <button class="collapse-button">&gt;</button><span>FOLDER 1</span>
+          </span>
+          <section class="content">
+            <ul>
+              <li class="file">file-outside.html</li>
+              <!-- folder element -->
+              <li>
+                <span class="folder">
+                  <button class="collapse-button">&gt;</button><span>JS</span>
+                </span>
+                <ul class="content">
+                  <li class="file">file1.js</li>
+                  <li class="file">file2.js</li>
+
+                  <!-- folder added for testing, remove -->
+                  <li>
+                    <span class="folder">
+                      <button class="collapse-button">&gt;</button
+                      ><span>inside</span>
+                    </span>
+                    <ul class="content">
+                      <li class="file">file1.js</li>
+                      <li>
+                        <span class="folder">
+                          <button class="collapse-button">&gt;</button
+                          ><span>next indented folder</span>
+                        </span>
+                        <ul class="content">
+                          <li class="file">file1.js</li>
+                          <li class="file">file2.js</li>
+                          <li class="file">style.css</li>
+                        </ul>
+                      </li>
+                      <li class="file">file2.js</li>
+                      <li class="file">style.css</li>
+                    </ul>
+                  </li>
+                  <!-- end removingt eh testing folder -->
+
+                  <li class="file">style.css</li>
+                </ul>
+              </li>
+
+              <li class="file">file2-outside.html</li>
+            </ul>
+          </section>
+        </section>
+        <section>
+          <span>
+            <button class="collapse-button">&gt;</button><span>FOLDER 2</span>
+          </span>
+          <section class="content">content in the collapsable div</section>
+        </section>
+      </section>
+
+      <div class="lr-handler"></div>
+
+      <section class="text-editor-column">
+        <!-- there can be more text editor rows -->
+        <section class="text-editor-row">
+          <div class="text-editor-content" contenteditable="true"></div>
+        </section>
+      </section>
+
+      <div class="lr-handler gray-handler"></div>
+
+      <!-- manually added columns, will be removed -->
+      <section class="text-editor-column">
+        <section class="text-editor-row">
+          <div class="text-editor-content" contenteditable="true"></div>
+        </section>
+      </section>
+
+      <div class="lr-handler gray-handler"></div>
+
+      <section class="text-editor-column">
+        <section class="text-editor-row">
+          <div class="text-editor-content" contenteditable="true"></div>
+        </section>
+      </section>
+      <!-- remove until here -->
+    </section>
+
+    <footer>
+      <div class="left-align">left align</div>
+      <div class="right-align">right align</div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.min.js"></script>
+    <script>
+      // editor widget
+      //   require.config({
+      //     paths: {
+      //       vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs",
+      //     },
+      //   });
+      //   require(["vs/editor/editor.main"], function () {
+      //       const textEditorArray = document.querySelectorAll('.text-editor-content');
+      //       textEditorArray.forEach(editor => {
+      //           monaco.editor.create(editor, {
+      //               language: 'javascript',
+      //               theme: 'vs-dark',
+      //               automaticLayout: true,
+      //               minimap: { enabled: false }
+      //           })
+      //       })
+      //   });
+    </script>
+  </body>
+</html>
