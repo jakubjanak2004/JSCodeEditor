@@ -5,13 +5,14 @@
 }
 
 *:not(ul) {
-    padding: 0;
+  padding: 0;
 }
 
 :root {
   /* size variables */
   --header-height: 35px;
   --footer-height: 25px;
+  --line-height: 18px;
 
   /* color variables */
   --color-1: rgb(45, 45, 45);
@@ -41,9 +42,12 @@ footer {
 }
 
 header {
-  background-color: var(--color-1);
   height: var(--header-height);
   justify-content: center;
+}
+
+.main-header {
+  background-color: var(--color-1);
 }
 
 #search-button {
@@ -73,8 +77,8 @@ header {
 }
 
 .arrow-button.clickable {
-    color: var(--gray-text-color);
-    cursor: pointer;
+  color: var(--gray-text-color);
+  cursor: pointer;
 }
 
 .arrow-button.clickable:hover {
@@ -99,6 +103,7 @@ footer {
 }
 
 .lr-handler {
+  position: relative;
   width: 5px;
   padding: 0;
   cursor: ew-resize;
@@ -110,15 +115,16 @@ footer {
   background-color: var(--color-1);
 }
 
-.lr-handler.selected,
-.lr-handler:hover {
-  width: 5px;
+.highlight {
+  pointer-events: none;
 }
 
-.lr-handler.selected::before,
-.lr-handler:hover::before {
-  content: "";
-  display: block;
+.lr-handler.selected .highlight,
+.lr-handler:hover .highlight {
+  display: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
   height: 100%;
   background: var(--editor-blue);
   margin: 0 auto;
@@ -183,37 +189,39 @@ nav button.selected {
 }
 
 #left-panel .content {
-    display: block;
-    padding: 0;
-    height: 0px;
-    font-size: 10px;
-    background-color: var(--color-2);
-    overflow: hidden;
+  display: block;
+  padding: 0;
+  height: 0px;
+  font-size: 10px;
+  background-color: var(--color-2);
+  overflow: hidden;
 }
 
 .content ul {
-    width: 100%;
-    list-style-position: inside;
-    list-style-type: none;
-    padding: 0;
+  width: 100%;
+  list-style-position: inside;
+  list-style-type: none;
+  padding: 0;
 }
 
-.file, .folder {
-    padding: 5px 0;
-    cursor: pointer;
+.file,
+.folder {
+  padding: 5px 0;
+  cursor: pointer;
 }
 
 .folder {
-    width: 100%;
-    display: inline-block;
+  width: 100%;
+  display: inline-block;
 }
 
-.content .file:hover, .content .folder:hover {
-    background-color: var(--color-7);
+.content .file:hover,
+.content .folder:hover {
+  background-color: var(--color-7);
 }
 
 #left-panel .opened > .content {
-    height: 100%;
+  height: 100%;
 }
 
 #left-panel section > * {
@@ -221,7 +229,7 @@ nav button.selected {
 }
 
 #left-panel .collapse-button {
-cursor: pointer;
+  cursor: pointer;
   height: auto;
   width: 20px;
   display: inline-block;
@@ -237,11 +245,11 @@ cursor: pointer;
 }
 
 #left-panel section.opened {
-    height: 100%;
+  height: 100%;
 }
 
 #left-panel .pressed {
-    transform: rotate(90deg);
+  transform: rotate(90deg);
 }
 
 .text-editor-column {
@@ -261,16 +269,78 @@ cursor: pointer;
   height: 100%;
   overflow: auto;
   outline: none;
+
+  display: grid;
+  grid-template-rows: var(--header-height) auto;
+}
+
+.editor-header {
+  background-color: var(--color-2);
 }
 
 .text-editor-content {
-  height: 100%;
   width: 100%;
-  overflow: hidden;
+  font-size: 12px;
+  overflow: auto;
+  outline: none;
+  display: grid;
+  grid-template-columns: 50px auto;
+  grid-template-rows: auto;
+  align-items: start;
+}
+
+.line-numbers {
+  padding-top: 1px;
+  width: 100%;
+}
+
+.line-numbers-block {
+  position: relative;
+  height: var(--line-height);
+}
+
+.line-number {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--gray-text-color);
+}
+
+.line-number.selected {
+  color: white;
+}
+
+.highlighter {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 33%;
+}
+
+.code-edit {
+  line-height: var(--line-height);
   white-space: nowrap;
   word-wrap: break-word;
   word-break: break-all;
   outline: none;
+
+  /* border: 1px solid red; */
+}
+
+.code-edit > * {
+  box-sizing: border-box;
+  height: var(--line-height);
+}
+
+.text-div{
+  outline: none;
+}
+
+.text-div.focused{
+  border-top: 1px solid rgb(60, 60, 60);
+  border-bottom: 1px solid rgb(60, 60, 60);
+  border-left: 1px solid rgb(60, 60, 60);
 }
 
 @media screen and (min-width: 700px) {
@@ -280,7 +350,7 @@ cursor: pointer;
 }
 
 @media screen and (min-width: 1000px) {
-    #search-button {
-        width: 600px;
-    }
+  #search-button {
+    width: 600px;
+  }
 }

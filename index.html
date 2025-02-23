@@ -8,7 +8,7 @@
     <title>Code Editor</title>
   </head>
   <body>
-    <header>
+    <header class="main-header">
       <button class="arrow-button clickable">&larr;</button>
       <button class="arrow-button">&rarr;</button>
       <button id="search-button">myCoding</button>
@@ -94,29 +94,29 @@
         </section>
       </section>
 
-      <div class="lr-handler"></div>
+      <div class="lr-handler"><div class="highlight"></div></div>
 
       <section class="text-editor-column">
         <!-- there can be more text editor rows -->
         <section class="text-editor-row">
-          <div class="text-editor-content" contenteditable="true"></div>
+          <header class="editor-header"></header>
+          <div class="text-editor-content">
+            <div class="line-numbers"></div>
+            <p class="code-edit" contenteditable="true"></p>
+          </div>
         </section>
       </section>
 
-      <div class="lr-handler gray-handler"></div>
+      <div class="lr-handler gray-handler"><div class="highlight"></div></div>
 
       <!-- manually added columns, will be removed -->
       <section class="text-editor-column">
         <section class="text-editor-row">
-          <div class="text-editor-content" contenteditable="true"></div>
-        </section>
-      </section>
-
-      <div class="lr-handler gray-handler"></div>
-
-      <section class="text-editor-column">
-        <section class="text-editor-row">
-          <div class="text-editor-content" contenteditable="true"></div>
+          <header class="editor-header"></header>
+          <div class="text-editor-content">
+            <div class="line-numbers"></div>
+            <p class="code-edit" contenteditable="true"></p>
+          </div>
         </section>
       </section>
       <!-- remove until here -->

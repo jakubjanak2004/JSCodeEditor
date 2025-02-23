@@ -1,6 +1,15 @@
+function getPointerPosition(e) {
+  if (e.touches) {
+    return e.touches[0].clientX;
+  }
+  return e.clientX;
+}
+
 export function dragbarFunction() {
   const handlers = document.querySelectorAll(".lr-handler");
-  const textEditorColumns = document.querySelectorAll('.text-editor-column, #left-panel');
+  const textEditorColumns = document.querySelectorAll(
+    ".text-editor-column, #left-panel"
+  );
   const boxMinWidth = 150;
 
   // setting the widths for the boxes
@@ -15,18 +24,19 @@ export function dragbarFunction() {
     const boxB = handler.nextElementSibling;
     let isHandlerDragging = false;
 
-    function getPointerPosition(e) {
-      if (e.touches) {
-        return e.touches[0].clientX;
-      }
-      return e.clientX;
-    }
-
     function startResizing(e) {
       if (e.target === handler) {
         isHandlerDragging = true;
         handler.classList.add("selected");
         document.body.style.cursor = "ew-resize";
+      }
+    }
+
+    function stopResizing() {
+      if (isHandlerDragging) {
+        isHandlerDragging = false;
+        handler.classList.remove("selected");
+        document.body.style.cursor = "default";
       }
     }
 
@@ -38,36 +48,33 @@ export function dragbarFunction() {
         e.preventDefault();
       }
 
-      // Get pointer position (works for both mouse and touch)
-      const containerOffsetLeft = boxA.offsetLeft;
-      const pointerRelativeXpos = getPointerPosition(e) - containerOffsetLeft;
-
-      const distanceFromRight = Math.abs(pointerRelativeXpos - boxMinWidth);
+      // boxA += resizeDelta, boxB -= resizeDelta
+      const resizeDelta =
+        getPointerPosition(e) - boxA.offsetLeft - boxA.offsetWidth;
 
       if (boxA.dataset.isCollapsable === "true") {
-        if (pointerRelativeXpos <= distanceFromRight) {
+        if (boxA.offsetWidth + resizeDelta < boxA.offsetWidth / 2) {
           boxB.style.width = `${boxB.offsetWidth + boxA.offsetWidth}px`;
           boxA.style.width = "0px";
           return;
         }
       }
 
-      // Resize box A based on pointer position
-      let resizeDifference = Math.max(boxMinWidth, pointerRelativeXpos) - boxA.offsetWidth;
-
-      if (boxB.offsetWidth - resizeDifference <= boxMinWidth) {
+      if (boxA.offsetWidth + resizeDelta <= boxMinWidth) {
         return;
       }
 
-      boxA.style.width = `${boxA.offsetWidth + resizeDifference}px`;
-      boxB.style.width = `${boxB.offsetWidth - resizeDifference}px`;
-    }
+      if (boxB.offsetWidth - resizeDelta <= boxMinWidth) {
+        return;
+      }
 
-    function stopResizing() {
-      if (isHandlerDragging) {
-        isHandlerDragging = false;
-        handler.classList.remove("selected");
-        document.body.style.cursor = "default";
+      if (resizeDelta > 0) {
+        boxB.style.width = `${boxB.offsetWidth - resizeDelta}px`;
+        boxA.style.width = `${boxA.offsetWidth + resizeDelta}px`;
+      }
+      if (resizeDelta < 0) {
+        boxA.style.width = `${boxA.offsetWidth + resizeDelta}px`;
+        boxB.style.width = `${boxB.offsetWidth - resizeDelta}px`;
       }
     }
 
