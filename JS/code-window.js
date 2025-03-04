@@ -1,6 +1,20 @@
 export function codeWindow() {
   const textEditorContents = document.querySelectorAll(".text-editor-content");
 
+  function countPreviousElements(element, className) {
+    let count = 0;
+    let sibling = element.previousElementSibling;
+
+    while (sibling) {
+        if (sibling.classList.contains(className)) {
+            count++;
+        }
+        sibling = sibling.previousElementSibling;
+    }
+
+    return count;
+}
+
   // update numbers
   textEditorContents.forEach((textEditorContent) => {
     const lineNumbers = textEditorContent.querySelector(".line-numbers");
@@ -51,41 +65,69 @@ export function codeWindow() {
   textEditorContents.forEach((textEditorContent) => {
     const codeEdit = textEditorContent.querySelector(".code-edit");
 
-    // TODO: handling text div and focusing
-    function createTextDiv() {
-        const newDiv = document.createElement("div");
-        newDiv.classList.add('text-div');
-        // newDiv.setAttribute('contenteditable', 'true');
-        newDiv.setAttribute('tabindex', '1');
-        newDiv.addEventListener('keydown', e => {
-            console.log(e.key);
-            const key = e.key;
-            if (key === 'Enter') {
-                const addingDiv = createTextDiv();
-                codeEdit.appendChild(addingDiv);
-                addingDiv.focus();
-                e.preventDefault();
-                return;
-            }
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          if (
+            node.nodeType === Node.ELEMENT_NODE &&
+            node.classList.contains("text-div")
+          ) {
+            createTextDiv(node);
+          }
         });
+      });
+    });
 
-        // handle divs focused unfocused
-        newDiv.addEventListener('focus', e => {
-            // console.log('focused');
-            newDiv.classList.add('focused')
-        });
-        newDiv.addEventListener('blur', e => {
-            // console.log('unfocused');
-            newDiv.classList.remove('focused')
-        });
+    observer.observe(codeEdit, { childList: true, subtree: false });
 
-        return newDiv;
+    codeEdit.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        return;
+      }
+      const textDivs = codeEdit.querySelectorAll(".text-div");
+      if (
+        textDivs.length === 1 &&
+        e.key === "Backspace" &&
+        !textDivs[0].textContent
+      ) {
+        e.preventDefault();
+        return;
+      }
+      e.target.firstElementChild.listenToKeyPressed(e);
+    });
+
+    document.addEventListener("selectionchange", () => {
+      const selection = window.getSelection();
+      if (selection.rangeCount > 0) {
+        document
+          .querySelectorAll(".text-div.focused")
+          .forEach((textDiv) => textDiv.classList.remove("focused"));
+
+        const selectedElement =
+          selection.anchorNode.parentElement.classList.contains("text-div")
+            ? selection.anchorNode.parentElement
+            : selection.anchorNode;
+        selectedElement.classList.add("focused");
+
+        const nthLine = countPreviousElements(selectedElement, 'text-div');
+        const lineNumbers = selectedElement.parentElement.parentElement.querySelectorAll('.line-number');
+        document.querySelectorAll('.line-number.selected').forEach(lineNumber => lineNumber.classList.remove('selected'));
+        lineNumbers[nthLine].classList.add('selected');
+      }
+    });
+
+    function createTextDiv(node) {
+      node.listenToKeyPressed = function (e) {
+        const key = e.key;
+        console.log("handling key event from text div: ", key);
+      };
     }
 
     //add txt as div rows
-    document.addEventListener('DOMContentLoaded', e => {
-        const newDiv = createTextDiv();
-        codeEdit.appendChild(newDiv);
+    document.addEventListener("DOMContentLoaded", (e) => {
+      const newDiv = document.createElement("div");
+      newDiv.classList.add("text-div");
+      codeEdit.appendChild(newDiv);
     });
   });
 }

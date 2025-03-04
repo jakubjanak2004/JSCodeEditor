@@ -1,13 +1,13 @@
 export function leftPanel() {
   const leftPanelCollapsebuttons =
-    document.querySelectorAll(".collapse-button");
+    document.querySelectorAll(".collapse-sign");
   const files = document.querySelectorAll(".file");
   const folders = document.querySelectorAll(".folder");
 
   leftPanelCollapsebuttons.forEach((button) => {
     button.parentElement.addEventListener("click", (e) => {
       let parentElement = button.parentElement;
-      while (parentElement.tagName.toLowerCase() === "span") {
+      while (parentElement.tagName.toLowerCase() === "button") {
         parentElement = parentElement.parentElement;
       }
       parentElement.classList.toggle("opened");

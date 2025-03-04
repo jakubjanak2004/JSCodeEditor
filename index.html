@@ -11,7 +11,7 @@
     <header class="main-header">
       <button class="arrow-button clickable">&larr;</button>
       <button class="arrow-button">&rarr;</button>
-      <button id="search-button">myCoding</button>
+      <button id="search-button">Workspace</button>
     </header>
 
     <section id="editor-container">
@@ -31,41 +31,41 @@
       <section id="left-panel" data-is-collapsable="true">
         <h3>EXPLORER</h3>
         <section id="search">
-          <span class="collapse-span">
-            <button class="collapse-button">&gt;</button><span>SEARCH</span>
-          </span>
+          <button class="collapse-button">
+            <span class="collapse-sign">&gt;</span><span>SEARCH</span>
+          </button>
           <section class="content">content in the collapsable div</section>
         </section>
         <!-- other left panel sections will be added programatically -->
         <section>
-          <span class="collapse-span">
-            <button class="collapse-button">&gt;</button><span>FOLDER 1</span>
-          </span>
+          <button class="collapse-button">
+            <span class="collapse-sign">&gt;</span><span>FOLDER 1</span>
+          </button>
           <section class="content">
             <ul>
               <li class="file">file-outside.html</li>
               <!-- folder element -->
               <li>
-                <span class="folder collapse-span">
-                  <button class="collapse-button">&gt;</button><span>JS</span>
-                </span>
+                <button class="folder collapse-button">
+                  <span class="collapse-sign">&gt;</span><span>JS</span>
+                </button>
                 <ul class="content">
                   <li class="file">file1.js</li>
                   <li class="file">file2.js</li>
 
                   <!-- folder added for testing, remove -->
                   <li>
-                    <span class="folder collapse-span">
-                      <button class="collapse-button">&gt;</button
+                    <button class="folder collapse-button">
+                      <span class="collapse-sign">&gt;</span
                       ><span>inside</span>
-                    </span>
+                      </button>
                     <ul class="content">
                       <li class="file">file1.js</li>
                       <li>
-                        <span class="folder collapse-span">
-                          <button class="collapse-button">&gt;</button
+                        <button class="folder collapse-button">
+                          <span class="collapse-sign">&gt;</span
                           ><span>next indented folder</span>
-                        </span>
+                        </button>
                         <ul class="content">
                           <li class="file">file1.js</li>
                           <li class="file">file2.js</li>
@@ -87,9 +87,9 @@
           </section>
         </section>
         <section>
-          <span class="collapse-span">
-            <button class="collapse-button">&gt;</button><span>FOLDER 2</span>
-          </span>
+          <button class="collapse-button">
+            <span class="collapse-sign">&gt;</span><span>FOLDER 2</span>
+          </button>
           <section class="content">content in the collapsable div</section>
         </section>
       </section>
@@ -99,7 +99,13 @@
       <section class="text-editor-column">
         <!-- there can be more text editor rows -->
         <section class="text-editor-row">
-          <header class="editor-header"></header>
+          <header class="editor-header">
+            <nav class="window-management">
+              <div class="window-bar selected">next.js</div>
+              <div class="window-bar">i_dont_know.css</div>
+            </nav>
+            <section class="path">codeEditor > nextProject > main > next.js</section>
+          </header>
           <div class="text-editor-content">
             <div class="line-numbers"></div>
             <p class="code-edit" contenteditable="true"></p>
@@ -112,11 +118,33 @@
       <!-- manually added columns, will be removed -->
       <section class="text-editor-column">
         <section class="text-editor-row">
-          <header class="editor-header"></header>
+          <header class="editor-header">
+            <nav class="window-management">
+              <div class="window-bar selected">main.js</div>
+              <div class="window-bar">style.css</div>
+            </nav>
+            <section class="path">codeEditor > JS > main.js</section>
+          </header>
           <div class="text-editor-content">
             <div class="line-numbers"></div>
-            <p class="code-edit" contenteditable="true"></p>
-          </div>
+            <p class="code-edit" contenteditable="true"></>
+          </>
+        </section>
+
+        <!-- next row added -->
+        <div class="ud-handler"><div class="highlight"></div></div>
+        <section class="text-editor-row">
+          <header class="editor-header">
+            <nav class="window-management">
+              <div class="window-bar selected">main.js</div>
+              <div class="window-bar">style.css</div>
+            </nav>
+            <section class="path">codeEditor > JS > main.js</section>
+          </header>
+          <div class="text-editor-content">
+            <div class="line-numbers"></div>
+            <p class="code-edit" contenteditable="true"></>
+          </>
         </section>
       </section>
       <!-- remove until here -->
@@ -126,26 +154,5 @@
       <div class="left-align">left align</div>
       <div class="right-align">right align</div>
     </footer>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.min.js"></script>
-    <script>
-      // editor widget
-      //   require.config({
-      //     paths: {
-      //       vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs",
-      //     },
-      //   });
-      //   require(["vs/editor/editor.main"], function () {
-      //       const textEditorArray = document.querySelectorAll('.text-editor-content');
-      //       textEditorArray.forEach(editor => {
-      //           monaco.editor.create(editor, {
-      //               language: 'javascript',
-      //               theme: 'vs-dark',
-      //               automaticLayout: true,
-      //               minimap: { enabled: false }
-      //           })
-      //       })
-      //   });
-    </script>
   </body>
 </html>
