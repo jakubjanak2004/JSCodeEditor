@@ -18,7 +18,8 @@ export function dragWindowBar() {
         }
 
         if (windowBar === windowBar.parentElement.lastElementChild) {
-          if (Math.abs(x - wBPosition.left - windowBar.offsetWidth) < 10 && Math.abs(y - wBPosition.top) < 45) {
+          const relativeXPosition = x - wBPosition.left - windowBar.offsetWidth; 
+          if (x < windowBar.parentElement.offsetLeft + windowBar.parentElement.offsetWidth - 10 && relativeXPosition >= -10 && Math.abs(y - wBPosition.top) < 45) {
             windowBar.classList.add('right-highlight');
           }
         }

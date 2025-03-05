@@ -211,6 +211,7 @@ nav button.selected {
 
 #left-panel {
   flex: 0 1 auto;
+  padding: 0;
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -225,7 +226,11 @@ nav button.selected {
   font-weight: 100;
 }
 
-#left-panel section {
+#left-panel li {
+  list-style-type: none;
+}
+
+#left-panel > li {
   background-color: var(--color-7);
 }
 
@@ -353,6 +358,13 @@ nav button.selected {
   position: relative;
 }
 
+.window-bar button {
+  background: none;
+  margin-left: 10px;
+  border: none;
+  color: inherit;
+}
+
 .window-bar.left-highlight::before {
   content: '';
   position: absolute;
@@ -453,6 +465,31 @@ nav button.selected {
   border-top: 2px solid rgb(36, 36, 36);
   border-bottom: 2px solid rgb(36, 36, 36);
   border-left: 2px solid rgb(36, 36, 36);
+}
+
+.drag-and-drop-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  pointer-events: none;
+  opacity: 0;
+}
+
+.drag-and-drop-panel h1{
+   font-size: 50px;
+}
+
+.drag-and-drop-panel.active{
+  background-color: rgba(100, 100, 100, 0.3);
+  pointer-events: all;
+  opacity: 1;
 }
 
 @media screen and (min-width: 700px) {

@@ -28,16 +28,17 @@
         </section>
       </nav>
       <!-- left panel editor -->
-      <section id="left-panel" data-is-collapsable="true">
+      <ul id="left-panel" data-is-collapsable="true">
         <h3>EXPLORER</h3>
-        <section id="search">
+        <li id="search">
           <button class="collapse-button">
             <span class="collapse-sign">&gt;</span><span>SEARCH</span>
           </button>
           <section class="content">content in the collapsable div</section>
-        </section>
+        </li>
+
         <!-- other left panel sections will be added programatically -->
-        <section>
+        <li>
           <button class="collapse-button">
             <span class="collapse-sign">&gt;</span><span>FOLDER 1</span>
           </button>
@@ -85,13 +86,15 @@
               <li class="file">file2-outside.html</li>
             </ul>
           </section>
-        </section>
-        <section>
+        </li>
+
+        <li>
           <button class="collapse-button">
             <span class="collapse-sign">&gt;</span><span>FOLDER 2</span>
           </button>
           <section class="content">content in the collapsable div</section>
-        </section>
+        </li>
+
       </section>
 
       <div class="lr-handler"><div class="highlight"></div></div>
@@ -101,8 +104,14 @@
         <section class="text-editor-row">
           <header class="editor-header">
             <nav class="window-management">
-              <div class="window-bar selected">next.js</div>
-              <div class="window-bar">i_dont_know.css</div>
+              <div class="window-bar selected">
+                next.js
+                <button>x</button>
+              </div>
+              <div class="window-bar">
+                i_dont_know.css
+                <button>x</button>
+              </div>
             </nav>
             <section class="path">codeEditor > nextProject > main > next.js</section>
           </header>
@@ -120,8 +129,14 @@
         <section class="text-editor-row">
           <header class="editor-header">
             <nav class="window-management">
-              <div class="window-bar selected">main.js</div>
-              <div class="window-bar">style.css</div>
+              <div class="window-bar selected">
+                main.js
+                <button>x</button>
+              </div>
+              <div class="window-bar">
+                style.css
+                <button>x</button>
+              </div>
             </nav>
             <section class="path">codeEditor > JS > main.js</section>
           </header>
@@ -136,8 +151,14 @@
         <section class="text-editor-row">
           <header class="editor-header">
             <nav class="window-management">
-              <div class="window-bar selected">main.js</div>
-              <div class="window-bar">style.css</div>
+              <div class="window-bar selected">
+                main.js
+                <button>x</button>
+              </div>
+              <div class="window-bar">
+                style.css
+                <button>x</button>
+              </div>
             </nav>
             <section class="path">codeEditor > JS > main.js</section>
           </header>
@@ -148,6 +169,11 @@
         </section>
       </section>
       <!-- remove until here -->
+
+      <!-- drag and drop panel -->
+      <section class="drag-and-drop-panel">
+        <h1>Drop Files</h1>
+      </section>
     </section>
 
     <footer>
