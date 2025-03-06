@@ -12,13 +12,13 @@ export function dragbarFunction() {
   const boxMinHeight = 60;
 
   // setting the widths for the boxes
-  textEditorColumns.forEach((column) => {
+  textEditorColumns.forEach(column => {
     column.style.width = `${column.offsetWidth}px`;
     column.style.flexGrow = 0;
   });
 
   // setting height for the rows
-  textEditorRows.forEach((row) => {
+  textEditorRows.forEach(row => {
     row.style.height = `${row.offsetHeight}px`;
     row.style.flexGrow = 0;
   });

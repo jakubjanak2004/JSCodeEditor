@@ -107,12 +107,13 @@ export function codeWindow() {
           selection.anchorNode.parentElement.classList.contains("text-div")
             ? selection.anchorNode.parentElement
             : selection.anchorNode;
-        selectedElement.classList.add("focused");
+            // todo: causing issues remove later
+        // selectedElement.classList.add("focused");
 
         const nthLine = countPreviousElements(selectedElement, 'text-div');
         const lineNumbers = selectedElement.parentElement.parentElement.querySelectorAll('.line-number');
         document.querySelectorAll('.line-number.selected').forEach(lineNumber => lineNumber.classList.remove('selected'));
-        lineNumbers[nthLine].classList.add('selected');
+        // lineNumbers[nthLine].classList.add('selected');
       }
     });
 

@@ -254,9 +254,12 @@ nav button.selected {
   padding: 0;
 }
 
-.file,
-.folder {
+.content .file,
+.content .folder {
   padding: 5px 0;
+}
+
+.file, .folder {
   cursor: pointer;
 }
 
@@ -490,6 +493,31 @@ nav button.selected {
   background-color: rgba(100, 100, 100, 0.3);
   pointer-events: all;
   opacity: 1;
+}
+
+.context-menu {
+  position: absolute;
+  background-color: var(--color-3);
+  border: 1px solid rgb(200, 200, 200);
+}
+
+.context-menu ul {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  list-style-type: none;
+}
+
+.context-menu ul li {
+  padding: 5px 10px;
+  width: 100px;
+  cursor: pointer;
+}
+
+.context-menu ul li:hover {
+  background-color: gray;
 }
 
 @media screen and (min-width: 700px) {

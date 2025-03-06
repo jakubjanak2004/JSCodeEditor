@@ -1,3 +1,5 @@
+import { WindowBar } from './drag/editor-manager.js';
+
 export function leftPanel() {
   const leftPanelCollapsebuttons = document.querySelectorAll(".collapse-sign");
   const files = document.querySelectorAll(".file");
@@ -53,6 +55,7 @@ class LeftPanelSection {
   entry;
   parentSection;
   sectionElement;
+  padding;
 
   constructor(parentSection, entry) {
     this.entry = entry;
@@ -75,7 +78,7 @@ class LeftPanelSection {
       }
       parent = parent.parentElement;
     }
-    this.sectionElement.style.paddingLeft = `${depth * 10}px`;
+    this.padding = `${depth * 10}px`;
   }
 }
 
@@ -94,7 +97,9 @@ export class LeftPanelSectionFolder extends LeftPanelSection {
 
     this.collapseButton = document.createElement("button");
     this.collapseButton.classList.add("collapse-button");
+    this.collapseButton.classList.add("folder");
     this.collapseButton.innerHTML = `<span class=collapse-sign>></span><span>${entry.name}</span>`;
+    this.collapseButton.style.paddingLeft = this.padding;
     this.collapseButton.addEventListener("click", (e) => {
       this.sectionElement.classList.toggle("opened");
       this.collapseButton.firstChild.classList.toggle("pressed");
@@ -102,8 +107,6 @@ export class LeftPanelSectionFolder extends LeftPanelSection {
 
     this.sectionElement.appendChild(this.collapseButton);
     this.sectionElement.appendChild(this.content);
-
-    this.sectionElement.classList.add("folder");
 
     const dirReader = this.entry.createReader();
     dirReader.readEntries((entries) => {
@@ -124,13 +127,16 @@ export class LeftPanelSectionFolder extends LeftPanelSection {
 }
 
 export class LeftPanelSectionFile extends LeftPanelSection {
+  windowBars = [];
+
   constructor(leftPanel, entry) {
     super(leftPanel, entry);
     this.sectionElement.classList.add("file");
     this.sectionElement.textContent = this.entry.name;
+    this.sectionElement.style.paddingLeft = this.padding;
 
     this.sectionElement.addEventListener("dblclick", (event) => {
-      console.log("doubleclicked file", this);
+      this.windowBars.push(new WindowBar(this.entry));
     });
   }
 }
