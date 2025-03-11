@@ -36,6 +36,141 @@ function getReceiverWindow(x, y, currentBar) {
   });
 }
 
+class EditorRow {
+  textEditorRow;
+  textEditorHeader;
+  windowManagement;
+  path;
+  textEditorContent;
+  editorColumn;
+  windowBars = [];
+
+  constructor(editorColumn) {
+    this.editorColumn = editorColumn;
+
+    // Create the main section
+    this.textEditorRow = document.createElement("section");
+    this.textEditorRow.classList.add("text-editor-row");
+
+    // Create the header
+    this.textEditorHeader = document.createElement("header");
+    this.textEditorHeader.classList.add("editor-header");
+
+    // Create the window management nav
+    this.windowManagement = document.createElement("nav");
+    this.windowManagement.classList.add("window-management");
+
+    // Create the path section
+    this.path = document.createElement("section");
+    this.path.classList.add("path");
+    this.path.textContent = "codeEditor > nextProject > main > next.js";
+
+    // Append elements to the header
+    this.textEditorHeader.appendChild(this.windowManagement);
+    this.textEditorHeader.appendChild(this.path);
+
+    // Create the text editor content div
+    this.textEditorContent = document.createElement("div");
+    this.textEditorContent.classList.add("text-editor-content");
+
+    // Create line numbers div
+    this.lineNumbers = document.createElement("div");
+    this.lineNumbers.classList.add("line-numbers");
+
+    // Create editable paragraph
+    this.codeEdit = document.createElement("p");
+    this.codeEdit.classList.add("code-edit");
+    this.codeEdit.setAttribute("contenteditable", "true");
+
+    // Append elements to the text editor content
+    this.textEditorContent.appendChild(this.lineNumbers);
+    this.textEditorContent.appendChild(this.codeEdit);
+
+    // Append everything to the main textEditorRow
+    this.textEditorRow.appendChild(this.textEditorHeader);
+    this.textEditorRow.appendChild(this.textEditorContent);
+
+    // appending text editor row to the text editor column object
+    this.editorColumn.editorColumn.appendChild(this.textEditorRow);
+  }
+
+  addWindow(windowBar) {
+    this.windowManagement.appendChild(windowBar.windowBar);
+    this.windowBars.push(windowBar);
+  }
+
+  removeWindow(windowBar) {
+    this.windowManagement.removeChild(windowBar.windowBar);
+    this.windowBars = this.windowBars.filter((item) => item !== windowBar);
+    if (!this.windowBars.length) {
+      this.editorColumn.removeRow(this);
+      this.textEditorRow.remove();
+    }
+  }
+
+  setContent(content) {
+    // Clear existing content
+    this.codeEdit.innerHTML = "";
+
+    // Split content by newlines
+    const lines = content.split("\n");
+
+    lines.forEach((line) => {
+      const lineDiv = document.createElement("div");
+      lineDiv.textContent = line;
+      lineDiv.classList.add("text-div");
+      this.codeEdit.appendChild(lineDiv);
+    });
+  }
+
+  removeContent() {
+    this.codeEdit.innerHTML = "";
+  }
+}
+
+class EditorColumn {
+  editorColumn;
+  editorRows = [];
+
+  constructor(editorContainer) {
+    this.editorColumn = document.createElement("div");
+    this.editorColumn.classList.add("text-editor-column");
+    editorContainer.appendChild(this.editorColumn);
+    this.editorRows.push(new EditorRow(this));
+  }
+
+  addWindow(windowBar) {
+    this.editorRows[0].addWindow(windowBar);
+    windowBar.editorRow = this.editorRows[0];
+    return this.editorRows[0];
+  }
+
+  removeRow(editorRow) {
+    this.editorRows = this.editorRows.filter((item) => item !== editorRow);
+  }
+}
+
+class EditorContainer {
+  static editorContainer = document.getElementById("editor-container");
+  static editorColumns = [new EditorColumn(this.editorContainer)];
+
+  static addNewWindowBar(windowBar) {
+    return this.editorColumns[0].addWindow(windowBar);
+  }
+
+  static splitRight(windowBar) {
+    let newEditorColumn = new EditorColumn(this.editorContainer);
+    this.editorColumns.push(newEditorColumn);
+    windowBar.editorRow.removeWindow(windowBar);
+    newEditorColumn.addWindow(windowBar);
+    windowBar.setActive();
+  }
+
+  static splitDown() {
+    // todo
+  }
+}
+
 class CustomContextMenu {
   static contextMenu;
   static windowBar;
@@ -52,33 +187,7 @@ class CustomContextMenu {
     const option1 = document.createElement("li");
     option1.textContent = "Split Right";
     option1.addEventListener("click", () => {
-      // split right clicked
-      console.log("split right clicked");
-
-      const editorContainer = document.getElementById("editor-container");
-      const newEditorColumn = document.createElement("section");
-      console.log(editorContainer, newEditorColumn);
-      newEditorColumn.innerHTML = `
-      <section class="text-editor-column">
-        <section class="text-editor-row">
-          <header class="editor-header">
-              <nav class="window-management">
-              </nav>
-              <section class="path">codeEditor > nextProject > main > next.js</section>
-          </header>
-          <div class="text-editor-content">
-              <div class="line-numbers"></div>
-              <p class="code-edit" contenteditable="true"></p>
-          </div>
-        </section>
-      </section>`;
-
-      editorContainer.innerHTML += `<div class="lr-handler"><div class="highlight"></div></div>`;
-      editorContainer.appendChild(newEditorColumn);
-      const windowManagement =
-        newEditorColumn.querySelector(".window-management");
-      this.windowBar.parentElement.removeChild(this.windowBar);
-      windowManagement.appendChild(this.windowBar);
+      EditorContainer.splitRight(this.windowBar);
     });
 
     const option2 = document.createElement("li");
@@ -125,123 +234,131 @@ class CustomContextMenu {
 
 export class WindowBar {
   entry;
+  windowBar;
+  editorRow;
+  receiverWindow;
+  isBarDragged = false;
+  windowBarGhost;
+  fileContent;
 
   constructor(entry) {
     this.entry = entry;
-
-    const firstEditorRow = document.querySelector(".text-editor-row");
-    const firstEditorHeader =
-      firstEditorRow.querySelector(".window-management");
-    const windowBar = document.createElement("div");
-    windowBar.classList.add("window-bar");
-    windowBar.textContent = this.entry.name;
+    this.windowBar = document.createElement("div");
+    this.windowBar.classList.add("window-bar");
+    this.windowBar.textContent = this.entry.name;
     const windowBarButton = document.createElement("button");
     windowBarButton.textContent = "x";
 
     windowBarButton.addEventListener("click", (e) => {
-      windowBar.parentElement.removeChild(windowBar);
+      this.windowBar.parentElement.removeChild(this.windowBar);
     });
 
-    windowBar.appendChild(windowBarButton);
-    firstEditorHeader.appendChild(windowBar);
+    this.windowBar.appendChild(windowBarButton);
 
-    windowBar.addEventListener("dblclick", (e) => {
-      const textWindow = windowBar.parentElement.parentElement.parentElement
-        .querySelector(".text-editor-content")
-        .querySelector(".code-edit");
+    // aqdding window into editor container
+    EditorContainer.addNewWindowBar(this);
 
-      // Check if `this.entry` exists and is a file
-      // add text into code edit from file
-      if (this.entry && this.entry.isFile) {
-        this.entry.file((file) => {
-          const reader = new FileReader();
-
-          reader.onload = (event) => {
-            console.log(textWindow);
-            textWindow.textContent = event.target.result; // Set the text content
-          };
-
-          reader.onerror = (error) => {
-            console.error("Error reading file:", error);
-          };
-
-          reader.readAsText(file); // Read the file as text
-        });
-      } else {
-        console.error("this.entry is not a valid file.");
-      }
+    // todo change into oop
+    this.windowBar.addEventListener("dblclick", e => {
+      this.setActive();
     });
 
-    windowBar.addEventListener("contextmenu", (event) => {
+    this.windowBar.addEventListener("contextmenu", (event) => {
       event.preventDefault();
-
-      CustomContextMenu.show(event, windowBar);
-
-      // contextMenu.style.top = `${event.clientY}px`;
-      // contextMenu.style.left = `${event.clientX}px`;
-      // contextMenu.style.display = "block";
+      CustomContextMenu.show(event, this);
     });
-
-    // document.addEventListener("click", () => {
-    // contextMenu.style.display = "none";
-    // });
 
     // dragging and receiving logic
-    let receiverWindow = undefined;
-    let isBarDragged = false;
-    const windowBarGhost = document.createElement("div");
-    windowBarGhost.classList.add("window-bar");
-    windowBarGhost.classList.add("dragging");
-    windowBarGhost.innerHTML = windowBar.innerHTML;
+    this.windowBarGhost = document.createElement("div");
+    this.windowBarGhost.classList.add("window-bar");
+    this.windowBarGhost.classList.add("dragging");
+    this.windowBarGhost.innerHTML = this.windowBar.innerHTML;
 
-    function startResizing(e) {
-      if (e.target !== windowBar) return;
-      isBarDragged = true;
-      body.appendChild(windowBarGhost);
-      document.body.style.cursor = "pointer";
+    this.windowBar.addEventListener("mousedown", this.startResizing.bind(this));
+    this.windowBar.addEventListener(
+      "touchstart",
+      this.startResizing.bind(this)
+    );
+
+    document.addEventListener("mousemove", this.moveResizing.bind(this), {
+      passive: false,
+    });
+    document.addEventListener("touchmove", this.moveResizing.bind(this), {
+      passive: false,
+    });
+
+    document.addEventListener("mouseup", this.stopResizing.bind(this));
+    document.addEventListener("touchend", this.stopResizing.bind(this));
+
+    this.loadFileContent();
+  }
+
+  setActive() {
+    this.editorRow.windowBars.forEach(windowBar => windowBar.windowBar.classList.remove('selected'))
+    this.windowBar.classList.add('selected');
+    this.editorRow.setContent(this.fileContent);
+  }
+
+  startResizing(e) {
+    if (e.target !== this.windowBar) return;
+    this.isBarDragged = true;
+    body.appendChild(this.windowBarGhost);
+    document.body.style.cursor = "pointer";
+  }
+
+  moveResizing(e) {
+    if (!this.isBarDragged) return;
+    this.windowBarGhost.style.left = `${getPointerPosition(e)}px`;
+    this.windowBarGhost.style.top = `${getPointerPositionY(e)}px`;
+    this.receiverWindow = getReceiverWindow(
+      getPointerPosition(e),
+      getPointerPositionY(e),
+      this.windowBar
+    );
+  }
+
+  stopResizing() {
+    if (!this.isBarDragged) return;
+    this.isBarDragged = false;
+    body.removeChild(this.windowBarGhost);
+    document.body.style.cursor = "default";
+
+    let receiveElement = document.querySelector(".window-bar.left-highlight");
+    if (receiveElement) {
+      this.windowBar.parentElement.removeChild(this.windowBar);
+      receiveElement.parentElement.insertBefore(this.windowBar, receiveElement);
+      receiveElement.classList.remove("left-highlight");
+      return;
     }
-
-    // todo handle adding the element to window management
-    function stopResizing() {
-      if (!isBarDragged) return;
-      isBarDragged = false;
-      body.removeChild(windowBarGhost);
-      document.body.style.cursor = "default";
-
-      let receiveElement = document.querySelector(".window-bar.left-highlight");
-      if (receiveElement) {
-        windowBar.parentElement.removeChild(windowBar);
-        receiveElement.parentElement.insertBefore(windowBar, receiveElement);
-        receiveElement.classList.remove("left-highlight");
-        return;
-      }
-      receiveElement = document.querySelector(".window-bar.right-highlight");
-      if (receiveElement) {
-        windowBar.parentElement.removeChild(windowBar);
-        receiveElement.parentElement.appendChild(windowBar);
-        receiveElement.classList.remove("right-highlight");
-        return;
-      }
+    receiveElement = document.querySelector(".window-bar.right-highlight");
+    if (receiveElement) {
+      this.windowBar.parentElement.removeChild(this.windowBar);
+      receiveElement.parentElement.appendChild(this.windowBar);
+      receiveElement.classList.remove("right-highlight");
+      return;
     }
+  }
 
-    function moveResizing(e) {
-      if (!isBarDragged) return;
-      windowBarGhost.style.left = `${getPointerPosition(e)}px`;
-      windowBarGhost.style.top = `${getPointerPositionY(e)}px`;
-      receiverWindow = getReceiverWindow(
-        getPointerPosition(e),
-        getPointerPositionY(e),
-        windowBar
-      );
+  loadFileContent() {
+    if (this.entry && this.entry.isFile) {
+      this.entry.file((file) => {
+        // todo read on object creation
+        const reader = new FileReader();
+
+        reader.onload = (event) => {
+          // Set the text content
+          this.fileContent = event.target.result;
+          this.setActive();
+        };
+
+        reader.onerror = (error) => {
+          console.error("Error reading file:", error);
+        };
+
+        reader.readAsText(file); 
+      });
+    } else {
+      console.error("this.entry is not a valid file.");
     }
-
-    windowBar.addEventListener("mousedown", startResizing);
-    windowBar.addEventListener("touchstart", startResizing);
-
-    document.addEventListener("mousemove", moveResizing, { passive: false });
-    document.addEventListener("touchmove", moveResizing, { passive: false });
-
-    document.addEventListener("mouseup", stopResizing);
-    document.addEventListener("touchend", stopResizing);
   }
 }

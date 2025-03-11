@@ -135,7 +135,7 @@ export class LeftPanelSectionFile extends LeftPanelSection {
     this.sectionElement.textContent = this.entry.name;
     this.sectionElement.style.paddingLeft = this.padding;
 
-    this.sectionElement.addEventListener("dblclick", (event) => {
+    this.sectionElement.addEventListener("dblclick", event => {
       this.windowBars.push(new WindowBar(this.entry));
     });
   }
