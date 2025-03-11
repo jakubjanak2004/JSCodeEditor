@@ -1,5 +1,5 @@
-import { getPointerPosition } from "./get-position.js";
-import { getPointerPositionY } from "./get-position.js";
+import { getPointerPosition, getPointerPositionY } from "./get-position.js";
+import { LRHandler, UDHandler } from "./dragbar.js";
 
 const body = document.querySelector("body");
 
@@ -128,14 +128,24 @@ class EditorRow {
 }
 
 class EditorColumn {
+  LRHandler;
   editorColumn;
   editorRows = [];
 
   constructor(editorContainer) {
+    const lrHandler = document.createElement('div');
+    lrHandler.classList.add('lr-handler');
+    const highlight = document.createElement('div');
+    highlight.classList.add('highlight');
+    lrHandler.appendChild(highlight);
+    EditorContainer.editorContainer.appendChild(lrHandler);
+
     this.editorColumn = document.createElement("div");
     this.editorColumn.classList.add("text-editor-column");
     editorContainer.appendChild(this.editorColumn);
     this.editorRows.push(new EditorRow(this));
+
+    this.LRHandler = new LRHandler(lrHandler);
   }
 
   addWindow(windowBar) {
@@ -161,7 +171,17 @@ class EditorContainer {
   }
 
   static splitRight(windowBar) {
+    // const lrHandler = document.createElement('div');
+    // lrHandler.classList.add('lr-handler');
+    // const highlight = document.createElement('div');
+    // highlight.classList.add('highlight');
+    // lrHandler.appendChild(highlight);
+    // this.editorContainer.appendChild(lrHandler);
+
     let newEditorColumn = new EditorColumn(this.editorContainer);
+
+    // newEditorColumn.LRHandler = new LRHandler(lrHandler);
+
     this.editorColumns.push(newEditorColumn);
     windowBar.editorRow.removeWindow(windowBar);
     newEditorColumn.addWindow(windowBar);
