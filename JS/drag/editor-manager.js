@@ -63,7 +63,6 @@ class EditorRow {
     // Create the path section
     this.path = document.createElement("section");
     this.path.classList.add("path");
-    this.path.textContent = "codeEditor > nextProject > main > next.js";
 
     // Append elements to the header
     this.textEditorHeader.appendChild(this.windowManagement);
@@ -152,9 +151,12 @@ class EditorColumn {
 
 class EditorContainer {
   static editorContainer = document.getElementById("editor-container");
-  static editorColumns = [new EditorColumn(this.editorContainer)];
+  static editorColumns = [];
 
   static addNewWindowBar(windowBar) {
+    if (this.editorColumns.length === 0) {
+      this.editorColumns.push(new EditorColumn(this.editorContainer));
+    }
     return this.editorColumns[0].addWindow(windowBar);
   }
 
@@ -240,6 +242,7 @@ export class WindowBar {
   isBarDragged = false;
   windowBarGhost;
   fileContent;
+  filePath;
 
   constructor(entry) {
     this.entry = entry;
@@ -259,7 +262,7 @@ export class WindowBar {
     EditorContainer.addNewWindowBar(this);
 
     // todo change into oop
-    this.windowBar.addEventListener("dblclick", e => {
+    this.windowBar.addEventListener("dblclick", (e) => {
       this.setActive();
     });
 
@@ -294,9 +297,13 @@ export class WindowBar {
   }
 
   setActive() {
-    this.editorRow.windowBars.forEach(windowBar => windowBar.windowBar.classList.remove('selected'))
-    this.windowBar.classList.add('selected');
+    this.editorRow.windowBars.forEach((windowBar) =>
+      windowBar.windowBar.classList.remove("selected")
+    );
+    this.windowBar.classList.add("selected");
     this.editorRow.setContent(this.fileContent);
+
+    this.editorRow.path.textContent = this.filePath;
   }
 
   startResizing(e) {
@@ -341,6 +348,12 @@ export class WindowBar {
 
   loadFileContent() {
     if (this.entry && this.entry.isFile) {
+
+      let path = this.entry.fullPath || this.entry.name; 
+      path = path.replace("/", "");
+      path = path.replaceAll("/", " > "); 
+      this.filePath = path; 
+
       this.entry.file((file) => {
         // todo read on object creation
         const reader = new FileReader();
@@ -355,7 +368,7 @@ export class WindowBar {
           console.error("Error reading file:", error);
         };
 
-        reader.readAsText(file); 
+        reader.readAsText(file);
       });
     } else {
       console.error("this.entry is not a valid file.");
