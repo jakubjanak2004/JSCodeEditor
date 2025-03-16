@@ -4,6 +4,8 @@ import { getPointerPositionY } from "./get-position.js";
 const boxMinWidth = 150;
 const boxMinHeight = 60;
 
+// todo add the similar code into the handler class
+
 class Handler {
   handler;
   boxA;
@@ -12,22 +14,6 @@ class Handler {
 
   constructor(handler) {
     this.handler = handler;
-  }
-}
-
-export class LRHandler extends Handler {
-  constructor(handler) {
-    super(handler);
-
-    this.boxA = handler.previousElementSibling;
-    this.boxB = handler.nextElementSibling;
-
-    console.log(this.boxA, this.boxB)
-
-    this.boxA.style.width = `${this.boxA.offsetWidth}px`;
-    this.boxA.style.flexGrow = "0";
-    this.boxB.style.width = `${this.boxB.offsetWidth}px`;
-    this.boxB.style.flexGrow = "0";
 
     this.handler.addEventListener("mousedown", this.startResizing.bind(this));
     this.handler.addEventListener("touchstart", this.startResizing.bind(this));
@@ -43,19 +29,37 @@ export class LRHandler extends Handler {
     document.addEventListener("touchend", this.stopResizing.bind(this));
   }
 
-  startResizing(e) {
-    if (e.target === this.handler) {
-      this.isHandlerDragging = true;
-      this.handler.classList.add("selected");
-      document.body.style.cursor = "ew-resize";
-    }
-  }
+  startResizing() {}
 
   stopResizing() {
     if (this.isHandlerDragging) {
       this.isHandlerDragging = false;
       this.handler.classList.remove("selected");
       document.body.style.cursor = "default";
+    }
+  }
+
+  moveResizing() {}
+}
+
+export class LRHandler extends Handler {
+  constructor(handler) {
+    super(handler);
+
+    this.boxA = this.handler.previousElementSibling;
+    this.boxB = this.handler.nextElementSibling;
+
+    this.boxA.style.width = `${this.boxA.offsetWidth}px`;
+    this.boxA.style.flexGrow = "0";
+    this.boxB.style.width = `${this.boxB.offsetWidth}px`;
+    this.boxB.style.flexGrow = "0";
+  }
+
+  startResizing(e) {
+    if (e.target === this.handler) {
+      this.isHandlerDragging = true;
+      this.handler.classList.add("selected");
+      document.body.style.cursor = "ew-resize";
     }
   }
 
@@ -104,42 +108,20 @@ export class UDHandler extends Handler {
   constructor(handler) {
     super(handler);
 
-    this.boxA = handler.previousElementSibling;
-    this.boxB = handler.nextElementSibling;
-    // this.isHandlerDragging = false;
-
-    handler.addEventListener("mousedown", this.startResizing);
-    handler.addEventListener("touchstart", this.startResizing);
-
-    document.addEventListener("mousemove", this.moveResizing, {
-      passive: false,
-    });
-    document.addEventListener("touchmove", this.moveResizing, {
-      passive: false,
-    });
-
-    document.addEventListener("mouseup", this.stopResizing);
-    document.addEventListener("touchend", this.stopResizing);
+    this.boxA = this.handler.previousElementSibling;
+    this.boxB = this.handler.nextElementSibling;
   }
 
   startResizing(e) {
-    if (e.target === handler) {
-      isHandlerDragging = true;
-      handler.classList.add("selected");
+    if (e.target === this.handler) {
+      this.isHandlerDragging = true;
+      this.handler.classList.add("selected");
       document.body.style.cursor = "ns-resize";
     }
   }
 
-  stopResizing() {
-    if (isHandlerDragging) {
-      isHandlerDragging = false;
-      handler.classList.remove("selected");
-      document.body.style.cursor = "default";
-    }
-  }
-
   moveResizing(e) {
-    if (!isHandlerDragging) return;
+    if (!this.isHandlerDragging) return;
 
     // preventing default for mobile
     if (e.type === "touchmove") {
@@ -147,23 +129,23 @@ export class UDHandler extends Handler {
     }
 
     const resizeDelta =
-      getPointerPositionY(e) - boxA.offsetTop - boxA.offsetHeight;
+      getPointerPositionY(e) - this.boxA.offsetTop - this.boxA.offsetHeight;
 
-    if (boxA.offsetHeight + resizeDelta <= boxMinHeight) {
+    if (this.boxA.offsetHeight + resizeDelta <= boxMinHeight) {
       return;
     }
 
-    if (boxB.offsetHeight - resizeDelta <= boxMinHeight) {
+    if (this.boxB.offsetHeight - resizeDelta <= boxMinHeight) {
       return;
     }
 
     if (resizeDelta > 0) {
-      boxB.style.height = `${boxB.offsetHeight - resizeDelta}px`;
-      boxA.style.height = `${boxA.offsetHeight + resizeDelta}px`;
+      this.boxB.style.height = `${this.boxB.offsetHeight - resizeDelta}px`;
+      this.boxA.style.height = `${this.boxA.offsetHeight + resizeDelta}px`;
     }
     if (resizeDelta < 0) {
-      boxA.style.height = `${boxA.offsetHeight + resizeDelta}px`;
-      boxB.style.height = `${boxB.offsetHeight - resizeDelta}px`;
+      this.boxA.style.height = `${this.boxA.offsetHeight + resizeDelta}px`;
+      this.boxB.style.height = `${this.boxB.offsetHeight - resizeDelta}px`;
     }
   }
 }

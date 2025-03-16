@@ -1,5 +1,5 @@
 import EditorContainer from "./EditorContainer.js";
-import {LRHandler} from "../drag/dragbar.js";
+import {LRHandler} from "../drag/handlers.js";
 import EditorRow from "./EditorRow.js";
 
 export default class EditorColumn {

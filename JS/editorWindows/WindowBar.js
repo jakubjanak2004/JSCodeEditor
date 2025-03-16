@@ -2,6 +2,7 @@ import {getPointerPosition, getPointerPositionY} from "../drag/get-position.js";
 import EditorContainer from "./EditorContainer.js";
 import CustomContextMenu from "./CustomContextMenu.js";
 
+// todo thing about extending the handler class
 export default class WindowBar {
     entry;
     windowBar;
@@ -50,6 +51,8 @@ export default class WindowBar {
             "touchstart",
             this.startResizing.bind(this)
         );
+
+        // todo abstract as the handlers are using the same logic
 
         document.addEventListener("mousemove", this.moveResizing.bind(this), {
             passive: false,

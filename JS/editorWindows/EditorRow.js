@@ -123,7 +123,7 @@ export default class EditorRow {
         document.addEventListener("DOMContentLoaded", (e) => {
             const newDiv = document.createElement("div");
             newDiv.classList.add("text-div");
-            codeEdit.appendChild(newDiv);
+            this.codeEdit.appendChild(newDiv);
         });
     }
 
