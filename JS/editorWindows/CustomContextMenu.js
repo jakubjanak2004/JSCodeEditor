@@ -1,6 +1,6 @@
-import {EditorContainer} from "./EditorContainer.js";
+import EditorContainer from "./EditorContainer.js";
 
-export class CustomContextMenu {
+export default class CustomContextMenu {
     static contextMenu;
     static windowBar;
 

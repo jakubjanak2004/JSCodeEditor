@@ -1,6 +1,6 @@
-import {EditorColumn} from "./EditorColumn.js";
+import EditorColumn from "./EditorColumn.js";
 
-export class EditorContainer {
+export default class EditorContainer {
     static editorContainer = document.getElementById("editor-container");
     static editorColumns = [];
 

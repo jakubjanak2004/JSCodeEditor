@@ -1,5 +1,6 @@
 import { LeftPanelSectionFolder } from "../left-panel.js";
-import { LeftPanelSectionFile } from "../left-panel.js";
+
+// todo change into OOP
 
 export function dragAndDropFiles() {
   const dropZone = document.querySelector(".drag-and-drop-panel");
@@ -15,7 +16,7 @@ export function dragAndDropFiles() {
     dropZone.classList.add("active");
   });
 
-  // Highlight drop zone when file is dragged over
+  // Highlight drop zone when a file is dragged over
   ["dragenter", "dragover"].forEach((event) => {
     // dropZone.addEventListener(event, () => dropZone.classList.add("active"));
   });

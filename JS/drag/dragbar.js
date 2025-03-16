@@ -4,27 +4,6 @@ import { getPointerPositionY } from "./get-position.js";
 const boxMinWidth = 150;
 const boxMinHeight = 60;
 
-export function dragbarFunction() {
-  // const handlers = document.querySelectorAll(".lr-handler");
-  // const udHandlers = document.querySelectorAll('.ud-handler');
-  const textEditorColumns = document.querySelectorAll(
-    ".text-editor-column, #left-panel"
-  );
-  const textEditorRows = document.querySelectorAll(".text-editor-row");
-
-  // setting the widths for the boxes
-  textEditorColumns.forEach((column) => {
-    column.style.width = `${column.offsetWidth}px`;
-    column.style.flexGrow = 0;
-  });
-
-  // setting height for the rows
-  textEditorRows.forEach((row) => {
-    row.style.height = `${row.offsetHeight}px`;
-    row.style.flexGrow = 0;
-  });
-}
-
 class Handler {
   handler;
   boxA;

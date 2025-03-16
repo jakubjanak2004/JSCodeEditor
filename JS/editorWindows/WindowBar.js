@@ -1,8 +1,8 @@
 import {getPointerPosition, getPointerPositionY} from "../drag/get-position.js";
-import {EditorContainer} from "./EditorContainer.js";
-import {CustomContextMenu} from "./CustomContextMenu.js";
+import EditorContainer from "./EditorContainer.js";
+import CustomContextMenu from "./CustomContextMenu.js";
 
-export class WindowBar {
+export default class WindowBar {
     entry;
     windowBar;
     editorRow;
@@ -77,7 +77,7 @@ export class WindowBar {
     startResizing(e) {
         if (e.target !== this.windowBar) return;
         this.isBarDragged = true;
-        body.appendChild(this.windowBarGhost);
+        document.body.appendChild(this.windowBarGhost);
         document.body.style.cursor = "pointer";
     }
 
@@ -85,17 +85,49 @@ export class WindowBar {
         if (!this.isBarDragged) return;
         this.windowBarGhost.style.left = `${getPointerPosition(e)}px`;
         this.windowBarGhost.style.top = `${getPointerPositionY(e)}px`;
-        this.receiverWindow = getReceiverWindow(
+        this.receiverWindow = this.getReceiverWindow(
             getPointerPosition(e),
             getPointerPositionY(e),
             this.windowBar
         );
     }
 
+    getReceiverWindow(x, y, currentBar) {
+        const windowBars = document.querySelectorAll(".window-bar:not(.dragging)");
+        windowBars.forEach((windowBar) => {
+            if (windowBar !== currentBar) {
+                let wBPosition = windowBar.getBoundingClientRect();
+                if (
+                    Math.abs(x - wBPosition.left) < 10 &&
+                    Math.abs(y - wBPosition.top) < 45
+                ) {
+                    windowBar.classList.add("left-highlight");
+                } else {
+                    windowBar.classList.remove("left-highlight");
+                    windowBar.classList.remove("right-highlight");
+                }
+
+                if (windowBar === windowBar.parentElement.lastElementChild) {
+                    const relativeXPosition = x - wBPosition.left - windowBar.offsetWidth;
+                    if (
+                        x <
+                        windowBar.parentElement.offsetLeft +
+                        windowBar.parentElement.offsetWidth -
+                        10 &&
+                        relativeXPosition >= -10 &&
+                        Math.abs(y - wBPosition.top) < 45
+                    ) {
+                        windowBar.classList.add("right-highlight");
+                    }
+                }
+            }
+        });
+    }
+
     stopResizing() {
         if (!this.isBarDragged) return;
         this.isBarDragged = false;
-        body.removeChild(this.windowBarGhost);
+        document.body.removeChild(this.windowBarGhost);
         document.body.style.cursor = "default";
 
         let receiveElement = document.querySelector(".window-bar.left-highlight");
@@ -110,7 +142,6 @@ export class WindowBar {
             this.windowBar.parentElement.removeChild(this.windowBar);
             receiveElement.parentElement.appendChild(this.windowBar);
             receiveElement.classList.remove("right-highlight");
-            return;
         }
     }
 

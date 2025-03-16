@@ -1,4 +1,4 @@
-export class EditorRow {
+export default class EditorRow {
     textEditorRow;
     textEditorHeader;
     windowManagement;
