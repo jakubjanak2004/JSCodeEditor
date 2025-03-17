@@ -1,54 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="style.css"/>
     <script src="JS/main.js" type="module"></script>
     <title>Code Editor</title>
-  </head>
-  <body>
-    <header class="main-header">
-      <button class="arrow-button clickable">&larr;</button>
-      <button class="arrow-button">&rarr;</button>
-      <button id="search-button">Workspace</button>
-    </header>
+</head>
+<body>
+<header class="main-header">
+    <button class="arrow-button clickable">&larr;</button>
+    <button class="arrow-button">&rarr;</button>
+    <button id="search-button">Workspace</button>
+</header>
 
-    <section id="editor-container">
-      <!-- left side navigation -->
-      <nav>
+<section id="editor-container">
+    <!-- left side navigation -->
+    <nav>
         <section class="up-align">
-          <button class="selected">fldrs</button>
-          <button>next1</button>
-          <button>next2</button>
+            <button class="selected">fldrs</button>
+            <button>next1</button>
+            <button>next2</button>
         </section>
         <section class="down-align">
-          <button>prfl</button>
-          <button>stngs</button>
+            <button>prfl</button>
+            <button>stngs</button>
         </section>
-      </nav>
-      <!-- left panel editor -->
-      <ul id="left-panel" data-is-collapsable="true">
+    </nav>
+    <!-- left panel editor -->
+    <ul id="left-panel" data-is-collapsable="true">
         <h3>EXPLORER</h3>
         <li id="search">
-          <button class="collapse-button">
-            <span class="collapse-sign">&gt;</span><span>SEARCH</span>
-          </button>
-          <section class="content">content in the collapsable div</section>
+            <button class="collapse-button">
+                <span class="collapse-sign">&gt;</span><span>SEARCH</span>
+            </button>
+            <section class="content">content in the collapsable div</section>
         </li>
-      </ul>
+    </ul>
+</section>
 
-      <!-- <div class="lr-handler"><div class="highlight"></div></div> -->
+<section class="drag-and-drop-panel">
+    <h1>Drop Files</h1>
+</section>
 
-    </section>
-
-    <section class="drag-and-drop-panel">
-      <h1>Drop Files</h1>
-    </section>
-
-    <footer>
-      <div class="left-align">left align</div>
-      <div class="right-align">right align</div>
-    </footer>
-  </body>
+<footer>
+    <div class="left-align">left align</div>
+    <div class="right-align">right align</div>
+</footer>
+</body>
 </html>

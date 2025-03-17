@@ -38,6 +38,26 @@ export default class WindowBar extends Handler {
             CustomContextMenu.show(event, this);
         });
 
+        const observer = new MutationObserver(mutationsList => {
+            for (const mutation of mutationsList) {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'data-selected-count') {
+                    const newValue = this.windowBar.dataset.selectedCount;
+                    if (newValue === "1") {
+                        // if selection-count is 1 and this.windowBar is not selected
+                        if (!this.windowBar.classList.contains('selected')) {
+                            console.log('setting active');
+                            this.setHTMLForSelected();
+                        }
+                    }
+                }
+            }
+        });
+
+        observer.observe(this.windowBar, {
+            attributes: true,
+            attributeFilter: ['data-selected-count'],
+        });
+
         // dragging and receiving logic
         this.windowBarGhost = windowBarGhost;
         this.windowBarGhost.classList.add("window-bar");
@@ -57,11 +77,31 @@ export default class WindowBar extends Handler {
     }
 
     setActive() {
-        this.windowBar.parentElement.querySelectorAll('.window-bar.selected')
+        this.windowBar.parentElement.querySelectorAll('.window-bar')
             .forEach(windowBar => windowBar.classList.remove('selected'));
         this.windowBar.classList.add("selected");
+        this.setSelected();
+        this.setHTMLForSelected();
+    }
+
+    setHTMLForSelected() {
+        this.windowBar.classList.add('selected');
         this.editorRow.querySelector('.code-edit').innerHTML = this.leftPanelSectionFile.HTMLTextContent;
         this.editorRow.querySelector('.path').textContent = this.leftPanelSectionFile.filePath;
+    }
+
+    setSelected() {
+        let wasSelection;
+        if (this.windowBar.dataset.selectedCount) {
+            wasSelection = parseInt(this.windowBar.dataset.selectedCount);
+        }
+        this.windowBar.dataset.selectedCount = '0';
+        this.editorRow.querySelectorAll('.window-bar').forEach(windowBar => {
+            let selectedCountInt = parseInt(windowBar.dataset.selectedCount);
+            if (!wasSelection || selectedCountInt <= wasSelection) {
+                windowBar.dataset.selectedCount = selectedCountInt + 1 + '';
+            }
+        })
     }
 
     startResizing(e) {
@@ -125,7 +165,8 @@ export default class WindowBar extends Handler {
             this.windowBar.parentElement.removeChild(this.windowBar);
             receiveElement.parentElement.insertBefore(this.windowBar, receiveElement);
             receiveElement.classList.remove("left-highlight");
-            console.log(receiveElement);
+            this.editorRow = receiveElement.parentElement.parentElement.parentElement;
+            this.setActive()
             return;
         }
         receiveElement = document.querySelector(".window-bar.right-highlight");
@@ -133,6 +174,8 @@ export default class WindowBar extends Handler {
             this.windowBar.parentElement.removeChild(this.windowBar);
             receiveElement.parentElement.appendChild(this.windowBar);
             receiveElement.classList.remove("right-highlight");
+            this.editorRow = receiveElement.parentElement.parentElement.parentElement;
+            this.setActive()
         }
     }
 }

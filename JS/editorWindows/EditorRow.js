@@ -119,6 +119,10 @@ export default class EditorRow {
         if (!node.classList.contains('window-bar')) {
             return;
         }
+        // decrement selectedCount on windowBarRemoved
+        this.textEditorRow.querySelectorAll('.window-bar').forEach(windowBar => {
+            windowBar.dataset.selectedCount = parseInt(windowBar.dataset.selectedCount) - 1 + '';
+        })
         this.windowBarCount--;
         if (!this.windowBarCount) {
             // remove this
@@ -146,12 +150,13 @@ export default class EditorRow {
                 ? selection.anchorNode.parentElement
                 : selection.anchorNode;
 
-        selectedElement.classList.add("focused");
-
-        const nthLine = this.countPreviousElements(selectedElement, 'text-div');
-        const lineNumbers = selectedElement.parentElement.parentElement.querySelectorAll('.line-number');
-        document.querySelectorAll('.line-number.selected').forEach(lineNumber => lineNumber.classList.remove('selected'));
-        lineNumbers[nthLine].classList.add('selected');
+        // todo causing issues
+        // selectedElement.classList.add("focused");
+        //
+        // const nthLine = this.countPreviousElements(selectedElement, 'text-div');
+        // const lineNumbers = selectedElement.parentElement.parentElement.querySelectorAll('.line-number');
+        // document.querySelectorAll('.line-number.selected').forEach(lineNumber => lineNumber.classList.remove('selected'));
+        // lineNumbers[nthLine].classList.add('selected');
     }
 
     createTextDiv(node) {

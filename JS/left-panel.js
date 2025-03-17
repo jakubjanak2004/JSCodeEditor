@@ -49,7 +49,7 @@ export class LeftPanelSectionFolder extends LeftPanelSection {
         this.collapseButton.classList.add("folder");
         this.collapseButton.innerHTML = `<span class=collapse-sign>></span><span>${entry.name}</span>`;
         this.collapseButton.style.paddingLeft = this.padding;
-        this.collapseButton.addEventListener("click", (e) => {
+        this.collapseButton.addEventListener("click", () => {
             this.sectionElement.classList.toggle("opened");
             this.collapseButton.firstChild.classList.toggle("pressed");
         });

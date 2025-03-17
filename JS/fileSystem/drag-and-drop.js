@@ -27,7 +27,7 @@ export function dragAndDropFiles() {
   });
 
   // Handle dropped files
-  dropZone.addEventListener("drop", (event) => {
+  dropZone.addEventListener("drop", event => {
     const files = event.dataTransfer.items;
     handleFiles(files);
   });
@@ -44,7 +44,7 @@ export function dragAndDropFiles() {
 
   function processEntry(entry, parentFolder) {
     if (entry.isFile) {
-      entry.file((file) => {
+      entry.file(file => {
         console.log('expected directory:', file);
       });
     } else if (entry.isDirectory) {
