@@ -1,5 +1,5 @@
 import EditorContainer from "./EditorContainer.js";
-import {LRHandler} from "../drag/handlers.js";
+import {LRHandler} from "./handlers.js";
 import EditorRow from "./EditorRow.js";
 
 export default class EditorColumn {
@@ -10,9 +10,11 @@ export default class EditorColumn {
     constructor(editorContainer) {
         const lrHandler = document.createElement('div');
         lrHandler.classList.add('lr-handler');
+
         const highlight = document.createElement('div');
         highlight.classList.add('highlight');
         lrHandler.appendChild(highlight);
+
         EditorContainer.editorContainer.appendChild(lrHandler);
 
         this.editorColumn = document.createElement("div");
@@ -25,7 +27,7 @@ export default class EditorColumn {
 
     addWindow(windowBar) {
         this.editorRows[0].addWindow(windowBar);
-        windowBar.editorRow = this.editorRows[0];
+        windowBar.editorRow = this.editorRows[0].textEditorRow;
         return this.editorRows[0];
     }
 

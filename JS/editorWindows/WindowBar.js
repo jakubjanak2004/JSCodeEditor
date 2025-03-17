@@ -1,37 +1,35 @@
 import {getPointerPosition, getPointerPositionY} from "../drag/get-position.js";
 import EditorContainer from "./EditorContainer.js";
 import CustomContextMenu from "./CustomContextMenu.js";
+import Handler from "./handlers.js";
 
-// todo thing about extending the handler class
-export default class WindowBar {
-    entry;
+export default class WindowBar extends Handler {
+    leftPanelSectionFile;
     windowBar;
     editorRow;
-    receiverWindow;
     isBarDragged = false;
     windowBarGhost;
-    fileContent;
-    filePath;
 
-    constructor(entry) {
-        this.entry = entry;
+    constructor(leftPanelSectionFile) {
+        const windowBarGhost = document.createElement("div");
+        super(windowBarGhost);
+        this.leftPanelSectionFile = leftPanelSectionFile;
         this.windowBar = document.createElement("div");
         this.windowBar.classList.add("window-bar");
-        this.windowBar.textContent = this.entry.name;
+        this.windowBar.textContent = this.leftPanelSectionFile.name;
         const windowBarButton = document.createElement("button");
         windowBarButton.textContent = "x";
 
-        windowBarButton.addEventListener("click", (e) => {
-            this.windowBar.parentElement.removeChild(this.windowBar);
+        windowBarButton.addEventListener("click", event => {
+            this.windowBar.remove();
         });
 
         this.windowBar.appendChild(windowBarButton);
 
-        // adding window into editor container
-        EditorContainer.addNewWindowBar(this);
+        // adding a window into editor container
+        this.editorRow = EditorContainer.addNewWindowBar(this).textEditorRow;
 
-        // todo change into oop
-        this.windowBar.addEventListener("dblclick", (e) => {
+        this.windowBar.addEventListener("dblclick", () => {
             this.setActive();
         });
 
@@ -41,7 +39,7 @@ export default class WindowBar {
         });
 
         // dragging and receiving logic
-        this.windowBarGhost = document.createElement("div");
+        this.windowBarGhost = windowBarGhost;
         this.windowBarGhost.classList.add("window-bar");
         this.windowBarGhost.classList.add("dragging");
         this.windowBarGhost.innerHTML = this.windowBar.innerHTML;
@@ -51,30 +49,19 @@ export default class WindowBar {
             "touchstart",
             this.startResizing.bind(this)
         );
+    }
 
-        // todo abstract as the handlers are using the same logic
-
-        document.addEventListener("mousemove", this.moveResizing.bind(this), {
-            passive: false,
-        });
-        document.addEventListener("touchmove", this.moveResizing.bind(this), {
-            passive: false,
-        });
-
-        document.addEventListener("mouseup", this.stopResizing.bind(this));
-        document.addEventListener("touchend", this.stopResizing.bind(this));
-
-        this.loadFileContent();
+    // todo maybe check if is active ad then call setActive()
+    updateContent() {
+        this.setActive();
     }
 
     setActive() {
-        this.editorRow.windowBars.forEach((windowBar) =>
-            windowBar.windowBar.classList.remove("selected")
-        );
+        this.windowBar.parentElement.querySelectorAll('.window-bar.selected')
+            .forEach(windowBar => windowBar.classList.remove('selected'));
         this.windowBar.classList.add("selected");
-        this.editorRow.setContent(this.fileContent);
-
-        this.editorRow.path.textContent = this.filePath;
+        this.editorRow.querySelector('.code-edit').innerHTML = this.leftPanelSectionFile.HTMLTextContent;
+        this.editorRow.querySelector('.path').textContent = this.leftPanelSectionFile.filePath;
     }
 
     startResizing(e) {
@@ -88,7 +75,7 @@ export default class WindowBar {
         if (!this.isBarDragged) return;
         this.windowBarGhost.style.left = `${getPointerPosition(e)}px`;
         this.windowBarGhost.style.top = `${getPointerPositionY(e)}px`;
-        this.receiverWindow = this.getReceiverWindow(
+        this.getReceiverWindow(
             getPointerPosition(e),
             getPointerPositionY(e),
             this.windowBar
@@ -97,7 +84,7 @@ export default class WindowBar {
 
     getReceiverWindow(x, y, currentBar) {
         const windowBars = document.querySelectorAll(".window-bar:not(.dragging)");
-        windowBars.forEach((windowBar) => {
+        windowBars.forEach(windowBar => {
             if (windowBar !== currentBar) {
                 let wBPosition = windowBar.getBoundingClientRect();
                 if (
@@ -138,6 +125,7 @@ export default class WindowBar {
             this.windowBar.parentElement.removeChild(this.windowBar);
             receiveElement.parentElement.insertBefore(this.windowBar, receiveElement);
             receiveElement.classList.remove("left-highlight");
+            console.log(receiveElement);
             return;
         }
         receiveElement = document.querySelector(".window-bar.right-highlight");
@@ -145,35 +133,6 @@ export default class WindowBar {
             this.windowBar.parentElement.removeChild(this.windowBar);
             receiveElement.parentElement.appendChild(this.windowBar);
             receiveElement.classList.remove("right-highlight");
-        }
-    }
-
-    loadFileContent() {
-        if (this.entry && this.entry.isFile) {
-
-            let path = this.entry.fullPath || this.entry.name;
-            path = path.replace("/", "");
-            path = path.replaceAll("/", " > ");
-            this.filePath = path;
-
-            this.entry.file((file) => {
-                // todo read on object creation
-                const reader = new FileReader();
-
-                reader.onload = (event) => {
-                    // Set the text content
-                    this.fileContent = event.target.result;
-                    this.setActive();
-                };
-
-                reader.onerror = (error) => {
-                    console.error("Error reading file:", error);
-                };
-
-                reader.readAsText(file);
-            });
-        } else {
-            console.error("this.entry is not a valid file.");
         }
     }
 }

@@ -34,8 +34,6 @@ export function dragAndDropFiles() {
 
   // add files to a filesystem
   function handleFiles(files) {
-    console.log(files);
-
     for (const item of files) {
       const entry = item.webkitGetAsEntry();
       if (entry) {

@@ -12,19 +12,10 @@ export default class EditorContainer {
     }
 
     static splitRight(windowBar) {
-        // const lrHandler = document.createElement('div');
-        // lrHandler.classList.add('lr-handler');
-        // const highlight = document.createElement('div');
-        // highlight.classList.add('highlight');
-        // lrHandler.appendChild(highlight);
-        // this.editorContainer.appendChild(lrHandler);
-
         let newEditorColumn = new EditorColumn(this.editorContainer);
 
-        // newEditorColumn.LRHandler = new LRHandler(lrHandler);
-
         this.editorColumns.push(newEditorColumn);
-        windowBar.editorRow.removeWindow(windowBar);
+        windowBar.editorRow.querySelector('.window-management').removeChild(windowBar.windowBar);
         newEditorColumn.addWindow(windowBar);
         windowBar.setActive();
     }

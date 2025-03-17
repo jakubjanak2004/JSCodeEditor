@@ -1,12 +1,10 @@
-import { getPointerPosition } from "./get-position.js";
-import { getPointerPositionY } from "./get-position.js";
+import { getPointerPosition } from "../drag/get-position.js";
+import { getPointerPositionY } from "../drag/get-position.js";
 
 const boxMinWidth = 150;
 const boxMinHeight = 60;
 
-// todo add the similar code into the handler class
-
-class Handler {
+export default class Handler {
   handler;
   boxA;
   boxB;
@@ -45,6 +43,10 @@ class Handler {
 export class LRHandler extends Handler {
   constructor(handler) {
     super(handler);
+
+    if (handler.previousElementSibling.id !== 'left-panel') {
+      handler.classList.add("gray-handler");
+    }
 
     this.boxA = this.handler.previousElementSibling;
     this.boxB = this.handler.nextElementSibling;

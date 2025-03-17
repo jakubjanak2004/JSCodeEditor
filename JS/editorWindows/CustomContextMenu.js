@@ -1,11 +1,12 @@
 import EditorContainer from "./EditorContainer.js";
 
 export default class CustomContextMenu {
-    static contextMenu;
-    static windowBar;
+    static contextMenu = null;
+    static windowBar = null;
 
     static initialize() {
-        if (this.contextMenu) return; // Prevent duplicate initialization
+        // Prevent duplicate initialization
+        if (this.contextMenu) return;
 
         this.contextMenu = document.createElement("div");
         this.contextMenu.classList.add("context-menu");
@@ -34,10 +35,10 @@ export default class CustomContextMenu {
         document.body.appendChild(this.contextMenu);
 
         // Hide menu when clicking elsewhere
-        document.addEventListener("click", () => this.hide());
+        document.addEventListener("click", this.hide.bind(this));
 
-        // Hide menu on pressing Escape key
-        document.addEventListener("keydown", (event) => {
+        // Hide a menu on pressing an Escape key
+        document.addEventListener("keydown", event => {
             if (event.key === "Escape") this.hide();
         });
     }
@@ -54,9 +55,8 @@ export default class CustomContextMenu {
     }
 
     static hide() {
-        if (this.contextMenu) {
-            this.contextMenu.style.display = "none";
-            this.windowBar = undefined;
-        }
+        if (!this.contextMenu) return;
+        this.contextMenu.style.display = "none";
+        this.windowBar = undefined;
     }
 }

@@ -5,7 +5,8 @@ export default class EditorRow {
     path;
     textEditorContent;
     editorColumn;
-    windowBars = [];
+    windowBarCount = 0;
+    selectionHistory = [];
 
     constructor(editorColumn) {
         this.editorColumn = editorColumn;
@@ -55,76 +56,109 @@ export default class EditorRow {
         this.editorColumn.editorColumn.appendChild(this.textEditorRow);
 
         // adding row numbers
-        const resizeObserver = new ResizeObserver(() => {
-            this.updateLinNumber();
-        });
+        const resizeObserver = new ResizeObserver(this.updateLinNumber.bind(this));
         resizeObserver.observe(this.codeEdit);
 
-        // line highlight
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                mutation.addedNodes.forEach((node) => {
-                    if (
-                        node.nodeType === Node.ELEMENT_NODE &&
-                        node.classList.contains("text-div")
-                    ) {
-                        createTextDiv(node);
+        // adding listen to key-pressed function
+        const observer = new MutationObserver(mutations => {
+            for (const mutation of mutations) {
+                // Handle added nodes
+                for (const node of mutation.addedNodes) {
+                    if (node.nodeType === Node.ELEMENT_NODE) {
+                        this.reactOnTextDivAdded(node);
+                        this.reactOnWindowBarAdded(node);
                     }
-                });
-            });
+                }
+
+                // Handle removed nodes
+                for (const node of mutation.removedNodes) {
+                    if (node.nodeType === Node.ELEMENT_NODE) {
+                        this.reactOnWindowBarRemoved(node);
+                    }
+                }
+            }
         });
 
-        observer.observe(this.codeEdit, { childList: true, subtree: false });
+        observer.observe(this.codeEdit, { childList: true });
+        observer.observe(this.windowManagement, { childList: true });
 
-        this.codeEdit.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") {
+        this.codeEdit.addEventListener("keydown", event => {
+            if (event.key === "Enter") {
                 return;
             }
             const textDivs = this.codeEdit.querySelectorAll(".text-div");
             if (
                 textDivs.length === 1 &&
-                e.key === "Backspace" &&
+                event.key === "Backspace" &&
                 !textDivs[0].textContent
             ) {
-                e.preventDefault();
+                event.preventDefault();
                 return;
             }
-            e.target.firstElementChild.listenToKeyPressed(e);
+            event.target.firstElementChild.listenToKeyPressed(event);
         });
 
-        document.addEventListener("selectionchange", () => {
-            const selection = window.getSelection();
-            if (selection.rangeCount > 0) {
-                document
-                    .querySelectorAll(".text-div.focused")
-                    .forEach((textDiv) => textDiv.classList.remove("focused"));
-
-                const selectedElement =
-                    selection.anchorNode.parentElement.classList.contains("text-div")
-                        ? selection.anchorNode.parentElement
-                        : selection.anchorNode;
-                selectedElement.classList.add("focused");
-
-                const nthLine = this.countPreviousElements(selectedElement, 'text-div');
-                const lineNumbers = selectedElement.parentElement.parentElement.querySelectorAll('.line-number');
-                document.querySelectorAll('.line-number.selected').forEach(lineNumber => lineNumber.classList.remove('selected'));
-                lineNumbers[nthLine].classList.add('selected');
-            }
-        });
-
-        function createTextDiv(node) {
-            node.listenToKeyPressed = function (e) {
-                const key = e.key;
-                console.log("handling key event from text div: ", key);
-            };
-        }
+        document.addEventListener("selectionchange", this.reactToSelectionChange.bind(this));
 
         //add txt as div rows
-        document.addEventListener("DOMContentLoaded", (e) => {
+        document.addEventListener("DOMContentLoaded", e => {
             const newDiv = document.createElement("div");
             newDiv.classList.add("text-div");
             this.codeEdit.appendChild(newDiv);
         });
+    }
+
+    reactOnWindowBarAdded(node) {
+        if (!node.classList.contains('window-bar')) {
+            return;
+        }
+        this.windowBarCount++;
+    }
+
+    reactOnWindowBarRemoved(node) {
+        if (!node.classList.contains('window-bar')) {
+            return;
+        }
+        this.windowBarCount--;
+        if (!this.windowBarCount) {
+            // remove this
+            this.editorColumn.removeRow(this);
+            this.textEditorRow.remove();
+        }
+    }
+
+    reactOnTextDivAdded(node) {
+        if (!node.classList.contains('text-div')) {
+            return;
+        }
+        this.createTextDiv(node);
+    }
+
+    reactToSelectionChange() {
+        const selection = window.getSelection();
+        if (selection.rangeCount <= 0) return;
+        document
+            .querySelectorAll(".text-div.focused")
+            .forEach(textDiv => textDiv.classList.remove("focused"));
+
+        const selectedElement =
+            selection.anchorNode.parentElement.classList.contains("text-div")
+                ? selection.anchorNode.parentElement
+                : selection.anchorNode;
+
+        selectedElement.classList.add("focused");
+
+        const nthLine = this.countPreviousElements(selectedElement, 'text-div');
+        const lineNumbers = selectedElement.parentElement.parentElement.querySelectorAll('.line-number');
+        document.querySelectorAll('.line-number.selected').forEach(lineNumber => lineNumber.classList.remove('selected'));
+        lineNumbers[nthLine].classList.add('selected');
+    }
+
+    createTextDiv(node) {
+        node.listenToKeyPressed = function (e) {
+            const key = e.key;
+            console.log("handling key event from text div: ", key);
+        };
     }
 
     countPreviousElements(element, className) {
@@ -175,34 +209,5 @@ export default class EditorRow {
 
     addWindow(windowBar) {
         this.windowManagement.appendChild(windowBar.windowBar);
-        this.windowBars.push(windowBar);
-    }
-
-    removeWindow(windowBar) {
-        this.windowManagement.removeChild(windowBar.windowBar);
-        this.windowBars = this.windowBars.filter((item) => item !== windowBar);
-        if (!this.windowBars.length) {
-            this.editorColumn.removeRow(this);
-            this.textEditorRow.remove();
-        }
-    }
-
-    setContent(content) {
-        // Clear existing content
-        this.codeEdit.innerHTML = "";
-
-        // Split content by newlines
-        const lines = content.split("\n");
-
-        lines.forEach((line) => {
-            const lineDiv = document.createElement("div");
-            lineDiv.textContent = line;
-            lineDiv.classList.add("text-div");
-            this.codeEdit.appendChild(lineDiv);
-        });
-    }
-
-    removeContent() {
-        this.codeEdit.innerHTML = "";
     }
 }
