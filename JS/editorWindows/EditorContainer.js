@@ -1,4 +1,6 @@
 import EditorColumn from "./EditorColumn.js";
+import EditorRow from "./EditorRow.js";
+import {UDHandler} from "./handlers.js";
 
 export default class EditorContainer {
     static editorContainer = document.getElementById("editor-container");
@@ -20,7 +22,22 @@ export default class EditorContainer {
         windowBar.setActive();
     }
 
-    static splitDown() {
-        // todo
+    static splitDown(windowBar) {
+        const editorColumn = windowBar.windowBar.closest('.text-editor-column');
+
+        const udHandler = document.createElement('div');
+        udHandler.classList.add('ud-handler');
+        editorColumn.appendChild(udHandler);
+
+        const highlight = document.createElement('div');
+        highlight.classList.add('highlight');
+        udHandler.appendChild(highlight);
+
+        let newEditorRow = new EditorRow(editorColumn);
+        windowBar.editorRow.querySelector('.window-management').removeChild(windowBar.windowBar);
+        newEditorRow.addWindow(windowBar);
+        windowBar.setActive();
+
+        new UDHandler(udHandler);
     }
 }

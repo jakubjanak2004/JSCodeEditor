@@ -6,7 +6,6 @@ export default class EditorRow {
     textEditorContent;
     editorColumn;
     windowBarCount = 0;
-    selectionHistory = [];
 
     constructor(editorColumn) {
         this.editorColumn = editorColumn;
@@ -53,7 +52,7 @@ export default class EditorRow {
         this.textEditorRow.appendChild(this.textEditorContent);
 
         // appending text editor row to the text editor column object
-        this.editorColumn.editorColumn.appendChild(this.textEditorRow);
+        this.editorColumn.appendChild(this.textEditorRow);
 
         // adding row numbers
         const resizeObserver = new ResizeObserver(this.updateLinNumber.bind(this));
@@ -126,7 +125,6 @@ export default class EditorRow {
         this.windowBarCount--;
         if (!this.windowBarCount) {
             // remove this
-            this.editorColumn.removeRow(this);
             this.textEditorRow.remove();
         }
     }
@@ -151,12 +149,12 @@ export default class EditorRow {
                 : selection.anchorNode;
 
         // todo causing issues
-        // selectedElement.classList.add("focused");
-        //
-        // const nthLine = this.countPreviousElements(selectedElement, 'text-div');
-        // const lineNumbers = selectedElement.parentElement.parentElement.querySelectorAll('.line-number');
-        // document.querySelectorAll('.line-number.selected').forEach(lineNumber => lineNumber.classList.remove('selected'));
-        // lineNumbers[nthLine].classList.add('selected');
+        selectedElement.classList.add("focused");
+
+        const nthLine = this.countPreviousElements(selectedElement, 'text-div');
+        const lineNumbers = selectedElement.parentElement.parentElement.querySelectorAll('.line-number');
+        document.querySelectorAll('.line-number.selected').forEach(lineNumber => lineNumber.classList.remove('selected'));
+        lineNumbers[nthLine].classList.add('selected');
     }
 
     createTextDiv(node) {
@@ -214,5 +212,6 @@ export default class EditorRow {
 
     addWindow(windowBar) {
         this.windowManagement.appendChild(windowBar.windowBar);
+        windowBar.editorRow = this.textEditorRow;
     }
 }

@@ -23,8 +23,7 @@ export default class CustomContextMenu {
         const option2 = document.createElement("li");
         option2.textContent = "Split Down";
         option2.addEventListener("click", () => {
-            // split down clicked
-            console.log("split down clicked");
+            EditorContainer.splitDown(this.windowBar);
         });
         // Append items
         menuList.appendChild(option1);

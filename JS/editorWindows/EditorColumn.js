@@ -20,9 +20,24 @@ export default class EditorColumn {
         this.editorColumn = document.createElement("div");
         this.editorColumn.classList.add("text-editor-column");
         editorContainer.appendChild(this.editorColumn);
-        this.editorRows.push(new EditorRow(this));
+        this.editorRows.push(new EditorRow(this.editorColumn));
 
         this.LRHandler = new LRHandler(lrHandler);
+
+        const observer = new MutationObserver(() => {
+            const editorRows = this.editorColumn.querySelectorAll('.text-editor-row');
+
+            if (editorRows.length === 0) {
+                this.editorColumn.remove();
+                this.LRHandler.handler.remove();
+                observer.disconnect();
+            }
+        });
+
+        observer.observe(this.editorColumn, {
+            childList: true,
+            subtree: false
+        });
     }
 
     addWindow(windowBar) {
@@ -31,7 +46,8 @@ export default class EditorColumn {
         return this.editorRows[0];
     }
 
-    removeRow(editorRow) {
-        this.editorRows = this.editorRows.filter((item) => item !== editorRow);
-    }
+    // todo checks if unnecessary or reimplement
+    // removeRow(editorRow) {
+    //     this.editorRows = this.editorRows.filter((item) => item !== editorRow);
+    // }
 }

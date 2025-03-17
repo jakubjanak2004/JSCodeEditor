@@ -157,7 +157,6 @@ footer {
 
 .lr-handler.selected .highlight,
 .lr-handler:hover .highlight {
-  display: absolute;
   top: 0;
   left: 0;
   width: 5px;
@@ -167,7 +166,6 @@ footer {
 
 .ud-handler.selected .highlight,
 .ud-handler:hover .highlight {
-  display: absolute;
   top: 0;
   left: 0;
   height: 5px;
