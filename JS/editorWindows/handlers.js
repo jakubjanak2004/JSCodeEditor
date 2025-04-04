@@ -25,6 +25,38 @@ export default class Handler {
 
     document.addEventListener("mouseup", this.stopResizing.bind(this));
     document.addEventListener("touchend", this.stopResizing.bind(this));
+
+    // set mutation observer to an boxA
+    // if removed, widen the boxB
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.removedNodes.length) {
+          mutation.removedNodes.forEach((removedNode) => {
+            // todo works but maybe is not the best to access the style of a removed element
+            // handle removed box
+            if (removedNode === this.boxA) {
+              this.boxB.style.width = `${this.boxB.offsetWidth + parseInt(this.boxA.style.width)}px`;
+
+              this.boxA = this.handler.previousElementSibling;
+              if (!this.boxA) {
+                // unable to load the boxA, therefore removing the handler
+                this.handler.remove();
+              }
+            }
+            if (removedNode === this.boxB) {
+              this.boxA.style.width =  `${this.boxA.offsetWidth + parseInt(this.boxB.style.width)}px`;
+
+              this.boxB = this.handler.nextElementSibling;
+            }
+          });
+        }
+      });
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
   }
 
   startResizing() {}
@@ -47,37 +79,17 @@ export class LRHandler extends Handler {
     this.boxA = this.handler.previousElementSibling;
     this.boxB = this.handler.nextElementSibling;
 
-    // todo make sure the flex grow 0 is right
+    // todo make sure the flex grow is not set to 0 as it makes problems with the responsivity
     this.boxA.style.width = `${this.boxA.offsetWidth}px`;
-    this.boxA.style.flexGrow = "0";
+    // this.boxA.style.flexGrow = "0";
     this.boxB.style.width = `${this.boxB.offsetWidth}px`;
-    this.boxB.style.flexGrow = "0";
+    // this.boxB.style.flexGrow = "0";
 
-    // set mutation observer to an boxA
-    // if removed, widen the boxB
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.removedNodes.length) {
-          mutation.removedNodes.forEach((removedNode) => {
-            if (removedNode === this.boxA) {
-              // todo works but maybe is not the best to access the style of a removed element
-              this.boxB.style.width = `${this.boxB.offsetWidth + parseInt(this.boxA.style.width)}px`;
 
-              // setting new boxA
-              this.boxA = this.handler.previousElementSibling;
-            }
-          });
-        }
-      });
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
   }
 
   startResizing(e) {
+    e.preventDefault();
     if (e.target === this.handler) {
       this.isHandlerDragging = true;
       this.handler.classList.add("selected");
@@ -86,12 +98,9 @@ export class LRHandler extends Handler {
   }
 
   moveResizing(e) {
-    if (!this.isHandlerDragging) return;
+    e.preventDefault();
 
-    // preventing default for mobile
-    if (e.type === "touchmove") {
-      e.preventDefault();
-    }
+    if (!this.isHandlerDragging) return;
 
     // boxA += resizeDelta, boxB -= resizeDelta
     const resizeDelta =
@@ -116,12 +125,12 @@ export class LRHandler extends Handler {
     }
 
     if (resizeDelta > 0) {
-      this.boxB.style.width = `${this.boxB.offsetWidth - resizeDelta}px`;
       this.boxA.style.width = `${this.boxA.offsetWidth + resizeDelta}px`;
+      this.boxB.style.width = `${this.boxB.offsetWidth - resizeDelta}px`;
     }
     if (resizeDelta < 0) {
-      this.boxA.style.width = `${this.boxA.offsetWidth + resizeDelta}px`;
       this.boxB.style.width = `${this.boxB.offsetWidth - resizeDelta}px`;
+      this.boxA.style.width = `${this.boxA.offsetWidth + resizeDelta}px`;
     }
   }
 }
@@ -135,6 +144,7 @@ export class UDHandler extends Handler {
   }
 
   startResizing(e) {
+    e.preventDefault();
     if (e.target === this.handler) {
       this.isHandlerDragging = true;
       this.handler.classList.add("selected");
@@ -143,12 +153,9 @@ export class UDHandler extends Handler {
   }
 
   moveResizing(e) {
-    if (!this.isHandlerDragging) return;
+    e.preventDefault();
 
-    // preventing default for mobile
-    if (e.type === "touchmove") {
-      e.preventDefault();
-    }
+    if (!this.isHandlerDragging) return;
 
     const resizeDelta =
       getPointerPositionY(e) - this.boxA.offsetTop - this.boxA.offsetHeight;

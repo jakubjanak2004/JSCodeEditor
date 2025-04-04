@@ -1,5 +1,3 @@
-import {UDHandler} from "./handlers.js";
-
 export default class EditorRow {
     textEditorRow;
     textEditorHeader;
