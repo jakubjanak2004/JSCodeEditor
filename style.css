@@ -146,7 +146,7 @@ footer {
   flex: 0 0 auto;
 }
 
-.gray-handler {
+.lr-handler:not(:first-of-type) {
   width: 3px;
   background-color: var(--color-1);
 }
@@ -227,7 +227,7 @@ nav button.selected {
   list-style-type: none;
 }
 
-#left-panel > li {
+#left-panel > li:not([id="main"]) {
   background-color: var(--color-7);
 }
 
@@ -238,7 +238,7 @@ nav button.selected {
 #left-panel .content {
   display: block;
   padding: 0;
-  height: 0px;
+  height: 0;
   font-size: 10px;
   background-color: var(--color-2);
   overflow: hidden;

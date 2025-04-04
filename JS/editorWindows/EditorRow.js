@@ -1,3 +1,5 @@
+import {UDHandler} from "./handlers.js";
+
 export default class EditorRow {
     textEditorRow;
     textEditorHeader;
@@ -6,6 +8,7 @@ export default class EditorRow {
     textEditorContent;
     editorColumn;
     windowBarCount = 0;
+    UDHandler;
 
     constructor(editorColumn) {
         this.editorColumn = editorColumn;
@@ -126,6 +129,10 @@ export default class EditorRow {
         if (!this.windowBarCount) {
             // remove this
             this.textEditorRow.remove();
+            // remove UDHandler if is set
+            if (this.UDHandler) {
+                this.UDHandler.handler.remove();
+            }
         }
     }
 

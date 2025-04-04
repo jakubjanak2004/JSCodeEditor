@@ -1,4 +1,4 @@
-import {getPointerPosition, getPointerPositionY} from "../drag/get-position.js";
+import {getPointerPosition, getPointerPositionY} from "../drag/getPosition.js";
 import EditorContainer from "./EditorContainer.js";
 import CustomContextMenu from "./CustomContextMenu.js";
 import Handler from "./handlers.js";

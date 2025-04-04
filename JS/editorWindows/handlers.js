@@ -1,5 +1,5 @@
-import { getPointerPosition } from "../drag/get-position.js";
-import { getPointerPositionY } from "../drag/get-position.js";
+import { getPointerPosition } from "../drag/getPosition.js";
+import { getPointerPositionY } from "../drag/getPosition.js";
 
 const boxMinWidth = 150;
 const boxMinHeight = 60;
@@ -44,17 +44,37 @@ export class LRHandler extends Handler {
   constructor(handler) {
     super(handler);
 
-    if (handler.previousElementSibling.id !== 'left-panel') {
-      handler.classList.add("gray-handler");
-    }
-
     this.boxA = this.handler.previousElementSibling;
     this.boxB = this.handler.nextElementSibling;
 
+    // todo make sure the flex grow 0 is right
     this.boxA.style.width = `${this.boxA.offsetWidth}px`;
     this.boxA.style.flexGrow = "0";
     this.boxB.style.width = `${this.boxB.offsetWidth}px`;
     this.boxB.style.flexGrow = "0";
+
+    // set mutation observer to an boxA
+    // if removed, widen the boxB
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.removedNodes.length) {
+          mutation.removedNodes.forEach((removedNode) => {
+            if (removedNode === this.boxA) {
+              // todo works but maybe is not the best to access the style of a removed element
+              this.boxB.style.width = `${this.boxB.offsetWidth + parseInt(this.boxA.style.width)}px`;
+
+              // setting new boxA
+              this.boxA = this.handler.previousElementSibling;
+            }
+          });
+        }
+      });
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
   }
 
   startResizing(e) {

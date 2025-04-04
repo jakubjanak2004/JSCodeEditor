@@ -1,4 +1,4 @@
-import { LeftPanelSectionFolder } from "../left-panel.js";
+import { LeftPanelSectionFolder } from "../leftPanel.js";
 
 // todo change into OOP
 

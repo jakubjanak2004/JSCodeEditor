@@ -38,6 +38,6 @@ export default class EditorContainer {
         newEditorRow.addWindow(windowBar);
         windowBar.setActive();
 
-        new UDHandler(udHandler);
+        newEditorRow.UDHandler = new UDHandler(udHandler);
     }
 }
