@@ -150,7 +150,6 @@ export class LeftPanelSectionFile extends LeftPanelSection {
             const text = await file.text();
 
             console.log('just read text', text);
-            // todo change the function being called
             this.updateTextContentOnLoad(text);
         } catch (error) {
             console.error('Error reading file:', error);

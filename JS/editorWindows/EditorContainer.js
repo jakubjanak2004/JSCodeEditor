@@ -6,6 +6,11 @@ export default class EditorContainer {
     static editorContainer = document.getElementById("editor-container");
     static editorColumns = [];
 
+    static removeColumn(column) {
+        console.log(this.editorColumns, column)
+        this.editorColumns = this.editorColumns.filter(col => col !== column);
+    }
+
     static addNewWindowBar(windowBar) {
         if (this.editorColumns.length === 0) {
             this.editorColumns.push(new EditorColumn(this.editorContainer));

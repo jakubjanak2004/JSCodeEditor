@@ -24,14 +24,26 @@ export default class EditorColumn {
 
         this.LRHandler = new LRHandler(lrHandler);
 
-        const observer = new MutationObserver(() => {
+        const observer = new MutationObserver((mutations) => {
             const editorRows = this.editorColumn.querySelectorAll('.text-editor-row');
 
-            if (editorRows.length === 0) {
+            if (editorRows.length === 0 && document.querySelectorAll('.text-editor-column').length > 1) {
                 this.editorColumn.remove();
                 this.LRHandler.handler.remove();
                 observer.disconnect();
+                EditorContainer.removeColumn(this);
             }
+
+            mutations.forEach(mutation => {
+                if (mutation.removedNodes.length) {
+                    mutation.removedNodes.forEach((removedNode) => {
+                        if (removedNode.classList && removedNode.classList.contains('text-editor-row')) {
+                            console.log(this.editorRows, removedNode);
+                            this.editorRows = this.editorRows.filter(r => r.textEditorRow !== removedNode);
+                        }
+                    });
+                }
+            });
         });
 
         observer.observe(this.editorColumn, {
@@ -41,13 +53,12 @@ export default class EditorColumn {
     }
 
     addWindow(windowBar) {
+        console.log('editorRows:', this.editorRows);
+        if (this.editorRows.length === 0) {
+            this.editorRows.push(new EditorRow(this.editorColumn));
+        }
         this.editorRows[0].addWindow(windowBar);
         windowBar.editorRow = this.editorRows[0].textEditorRow;
         return this.editorRows[0];
     }
-
-    // todo checks if unnecessary or reimplement
-    // removeRow(editorRow) {
-    //     this.editorRows = this.editorRows.filter((item) => item !== editorRow);
-    // }
 }

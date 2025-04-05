@@ -153,7 +153,6 @@ export default class EditorRow {
                 ? selection.anchorNode.parentElement
                 : selection.anchorNode;
 
-        // todo causing issues
         selectedElement.classList.add("focused");
 
         const nthLine = this.countPreviousElements(selectedElement, 'text-div');
