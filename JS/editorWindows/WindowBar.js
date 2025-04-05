@@ -22,6 +22,7 @@ export default class WindowBar extends Handler {
 
         windowBarButton.addEventListener("click", event => {
             this.windowBar.remove();
+            this.leftPanelSectionFile.removeWindowBar(this);
         });
 
         this.windowBar.appendChild(windowBarButton);
@@ -86,7 +87,15 @@ export default class WindowBar extends Handler {
 
     setHTMLForSelected() {
         this.windowBar.classList.add('selected');
-        this.editorRow.querySelector('.code-edit').innerHTML = this.leftPanelSectionFile.HTMLTextContent;
+        const codeEdit = this.editorRow.querySelector('.code-edit');
+        codeEdit.innerHTML = this.leftPanelSectionFile.HTMLTextContent;
+        codeEdit.onkeyup = (event) => {
+            const content = codeEdit.innerHTML
+                .replace(/<div[^>]*>/gi, '')
+                .replace(/<\/div>(?!.*<\/div>)/s, '')
+                .replace(/<\/div>/gi, '\n');
+            this.leftPanelSectionFile.updateTextContentChanged(content, this);
+        }
         this.editorRow.querySelector('.path').textContent = this.leftPanelSectionFile.filePath;
     }
 

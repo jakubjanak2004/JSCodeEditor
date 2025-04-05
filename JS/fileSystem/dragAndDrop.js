@@ -1,7 +1,5 @@
 import { LeftPanelSectionFolder } from "../leftPanel.js";
 
-// todo change into OOP
-
 export function dragAndDropFiles() {
   const dropZone = document.querySelector(".drag-and-drop-panel");
   const fileList = document.getElementById("left-panel");
@@ -33,21 +31,24 @@ export function dragAndDropFiles() {
   });
 
   // add files to a filesystem
-  function handleFiles(files) {
+  async function handleFiles(files) {
     for (const item of files) {
-      const entry = item.webkitGetAsEntry();
-      if (entry) {
-        processEntry(entry, fileList);
+      const handle = await item.getAsFileSystemHandle();
+      console.log(handle)
+
+      if (handle) {
+        processEntry(handle, fileList);
       }
     }
   }
 
   function processEntry(entry, parentFolder) {
-    if (entry.isFile) {
+    if (entry.kind === 'file') {
       entry.file(file => {
         console.log('expected directory:', file);
       });
-    } else if (entry.isDirectory) {
+    } else if (entry.kind === 'directory') {
+      console.log('folder given:', entry)
       new LeftPanelSectionFolder(parentFolder, entry);
     }
   }

@@ -165,7 +165,7 @@ export default class EditorRow {
     createTextDiv(node) {
         node.listenToKeyPressed = function (e) {
             const key = e.key;
-            console.log("handling key event from text div: ", key);
+            // console.log("handling key event from text div: ", key);
         };
     }
 

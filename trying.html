@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    #drag-and-drop {
+        width: 100%;
+        height: 100vh;
+        background-color: gray;
+    }
+</style>
+<body>
+
+<div id="drag-and-drop"></div>
+
+<script defer>
+    const elem = document.getElementById('drag-and-drop');
+
+    elem.addEventListener("dragover", (e) => {
+        // Prevent navigation.
+        e.preventDefault();
+    });
+    elem.addEventListener("drop", async (e) => {
+        // Prevent navigation.
+        e.preventDefault();
+
+        // Process all of the items.
+        for (const item of e.dataTransfer.items) {
+            // kind will be 'file' for file/directory entries.
+            if (item.kind === "file") {
+                const entry = await item.getAsFileSystemHandle();
+                console.log(entry)
+                if (entry.kind === "file") {
+                    // run code for if entry is a file
+                    console.log('the entry is a file')
+                    try {
+                        // writing into a file
+                        const writable = await entry.createWritable();
+                        // Write the contents to the file
+                        await writable.write("Hello from JS");
+                        // Close the file
+                        await writable.close();
+                        console.log('File written successfully.');
+                    } catch (error) {
+                        console.error('Failed to write file:', error);
+                    }
+                } else if (entry.kind === "directory") {
+                    // run code for is entry is a directory
+                    console.log('the entry is a directory')
+                    try {
+                        // create new directory
+                        const newFolderHandle = await entry.getDirectoryHandle('text', { create: true });
+                        console.log('New folder created:', newFolderHandle);
+
+                        const newFileHandle = await entry.getFileHandle('text.txt', { create: true });
+                        console.log('New file created:', newFileHandle);
+                    } catch (error) {
+                        console.error('Error creating new folder:', error);
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

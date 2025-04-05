@@ -5,10 +5,14 @@ class LeftPanelSection {
     parentSection;
     sectionElement;
     padding;
+    parentFolders = [];
 
-    constructor(parentSection, entry) {
+    constructor(parentSection, entry, parentFolder) {
         this.entry = entry;
         this.parentSection = parentSection;
+        if (parentFolder) {
+            this.parentFolders.push(parentFolder);
+        }
 
         this.sectionElement = document.createElement("li");
         this.parentSection.appendChild(this.sectionElement);
@@ -37,8 +41,8 @@ export class LeftPanelSectionFolder extends LeftPanelSection {
     childFolders = [];
     childFiles = [];
 
-    constructor(leftPanel, entry) {
-        super(leftPanel, entry);
+    constructor(leftPanel, entry, parentFolder) {
+        super(leftPanel, entry, parentFolder);
         this.entry = entry;
 
         this.content = document.createElement("ul");
@@ -57,21 +61,22 @@ export class LeftPanelSectionFolder extends LeftPanelSection {
         this.sectionElement.appendChild(this.collapseButton);
         this.sectionElement.appendChild(this.content);
 
-        const dirReader = this.entry.createReader();
-        dirReader.readEntries((entries) => {
-            for (const subEntry of entries) {
-                if (subEntry.isFile) {
-                    this.childFiles.push(
-                        new LeftPanelSectionFile(this.content, subEntry)
-                    );
-                }
-                if (subEntry.isDirectory) {
-                    this.childFolders.push(
-                        new LeftPanelSectionFolder(this.content, subEntry)
-                    );
-                }
+        this.loadSubFiles();
+    }
+
+    async loadSubFiles() {
+        for await (const subEntry of this.entry.values()) {
+            if (subEntry.kind === "file") {
+                this.childFiles.push(
+                    new LeftPanelSectionFile(this.content, subEntry, this.entry)
+                );
             }
-        });
+            if (subEntry.kind === "directory") {
+                this.childFolders.push(
+                    new LeftPanelSectionFolder(this.content, subEntry, this.entry)
+                );
+            }
+        }
     }
 }
 
@@ -79,58 +84,103 @@ export class LeftPanelSectionFile extends LeftPanelSection {
     windowBars = [];
     textContent;
     HTMLTextContent;
-    filePath;
+    filePath = "";
     name;
+    contentDirty = false;
 
-    constructor(leftPanel, entry) {
-        super(leftPanel, entry);
+    constructor(leftPanel, entry, parentFolder) {
+        super(leftPanel, entry, parentFolder);
         this.sectionElement.classList.add("file");
         this.name = this.entry.name;
         this.sectionElement.textContent = this.name;
         this.sectionElement.style.paddingLeft = this.padding;
 
         this.sectionElement.addEventListener("dblclick", () => {
+            if (this.windowBars.length > 0) {
+                console.error('For now the creation of multiple window Bars for one file is not allowed');
+                return;
+            }
+
             // load Content on first WindowBar creation
             if (!this.textContent) {
-                this.loadTextContent();
+                console.log('Loading the text content');
+                this.loadTextContent().then(() => {
+                    this.windowBars.push(new WindowBar(this));
+                    this.windowBars[this.windowBars.length - 1].setActive();
+                });
+            } else {
+                this.windowBars.push(new WindowBar(this));
+                this.windowBars[this.windowBars.length - 1].setActive();
             }
-            this.windowBars.push(new WindowBar(this));
-            this.windowBars[this.windowBars.length-1].setActive();
+        });
+
+        document.addEventListener('keydown', event => {
+            if (event.key === 's' && (event.ctrlKey || event.metaKey)) {
+                event.preventDefault();
+                if (!this.contentDirty) return;
+                console.log('ctrl+s on dirty file')
+                this.saveContentIntoFile().then(() => {
+                    console.log('Contents of', this.name, 'saved');
+                });
+            }
         });
     }
 
-    // loading the text file content
-    loadTextContent() {
-        if (this.entry && this.entry.isFile) {
-            let path = this.entry.fullPath || this.entry.name;
-            path = path.replace("/", "");
-            path = path.replaceAll("/", " > ");
-            this.filePath = path;
-
-            this.entry.file((file) => {
-                const reader = new FileReader();
-
-                reader.onload = (event) => {
-                    this.notifyTextContentChanged(event.target.result);
-                };
-
-                reader.onerror = (error) => {
-                    console.error("Error reading file:", error);
-                };
-
-                reader.readAsText(file);
-            });
-        } else {
-            console.error("this.entry is not a valid file.");
-        }
+    async saveContentIntoFile() {
+        const writable = await this.entry.createWritable();
+        await writable.write(this.textContent);
+        await writable.close();
+        this.contentDirty = false;
     }
 
-    notifyTextContentChanged(newContent) {
+    removeWindowBar(windowBar) {
+        this.windowBars = this.windowBars.filter(item => {
+            return item !== windowBar;
+        })
+    }
+
+    // loading the text file content
+    async loadTextContent() {
+        try {
+            // Get the File object from the file handle
+            console.log(this.entry);
+            const file = await this.entry.getFile();
+
+            // Read the contents of the file as text
+            const text = await file.text();
+
+            console.log('just read text', text);
+            // todo change the function being called
+            this.updateTextContentOnLoad(text);
+        } catch (error) {
+            console.error('Error reading file:', error);
+            throw error;
+        }
+
+        for (const folder of this.parentFolders) {
+            this.filePath += folder.name + " > ";
+        }
+        this.filePath += this.entry.name;
+    }
+
+    updateTextContentOnLoad(newContent) {
         this.textContent = newContent;
         this.HTMLTextContent = this.parseContent(newContent);
         this.windowBars.forEach(windowBar => {
-            windowBar.updateContent();
-        })
+                windowBar.updateContent();
+        });
+    }
+
+    updateTextContentChanged(newContent, updatingWindowBar) {
+        this.contentDirty = true;
+        this.textContent = newContent;
+        this.HTMLTextContent = this.parseContent(newContent);
+        // notify the windows about the content being changed
+        this.windowBars.forEach(windowBar => {
+            if (windowBar !== updatingWindowBar) {
+                windowBar.updateContent();
+            }
+        });
     }
 
     parseContent(content) {
