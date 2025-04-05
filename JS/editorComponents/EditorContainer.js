@@ -1,13 +1,12 @@
 import EditorColumn from "./EditorColumn.js";
 import EditorRow from "./EditorRow.js";
-import {UDHandler} from "./handlers.js";
+import UDHandler from "./handler/UDHandler.js";
 
 export default class EditorContainer {
     static editorContainer = document.getElementById("editor-container");
     static editorColumns = [];
 
     static removeColumn(column) {
-        console.log(this.editorColumns, column)
         this.editorColumns = this.editorColumns.filter(col => col !== column);
     }
 

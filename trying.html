@@ -31,10 +31,8 @@
             // kind will be 'file' for file/directory entries.
             if (item.kind === "file") {
                 const entry = await item.getAsFileSystemHandle();
-                console.log(entry)
                 if (entry.kind === "file") {
                     // run code for if entry is a file
-                    console.log('the entry is a file')
                     try {
                         // writing into a file
                         const writable = await entry.createWritable();
@@ -48,7 +46,6 @@
                     }
                 } else if (entry.kind === "directory") {
                     // run code for is entry is a directory
-                    console.log('the entry is a directory')
                     try {
                         // create new directory
                         const newFolderHandle = await entry.getDirectoryHandle('text', { create: true });

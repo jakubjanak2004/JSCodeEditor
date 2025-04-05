@@ -1,5 +1,5 @@
 import EditorContainer from "./EditorContainer.js";
-import {LRHandler} from "./handlers.js";
+import LRHandler from "./handler/LRHandler.js";
 import EditorRow from "./EditorRow.js";
 
 export default class EditorColumn {
@@ -38,7 +38,6 @@ export default class EditorColumn {
                 if (mutation.removedNodes.length) {
                     mutation.removedNodes.forEach((removedNode) => {
                         if (removedNode.classList && removedNode.classList.contains('text-editor-row')) {
-                            console.log(this.editorRows, removedNode);
                             this.editorRows = this.editorRows.filter(r => r.textEditorRow !== removedNode);
                         }
                     });
@@ -53,7 +52,6 @@ export default class EditorColumn {
     }
 
     addWindow(windowBar) {
-        console.log('editorRows:', this.editorRows);
         if (this.editorRows.length === 0) {
             this.editorRows.push(new EditorRow(this.editorColumn));
         }

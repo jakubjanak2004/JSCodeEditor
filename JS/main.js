@@ -1,3 +1,3 @@
-import { dragAndDropFiles } from "./fileSystem/dragAndDrop.js";
+import { dragAndDropFiles } from "./fileSystem/DragAndDrop.js";
 
 dragAndDropFiles();

@@ -1,7 +1,7 @@
-import {getPointerPosition, getPointerPositionY} from "../drag/getPosition.js";
-import EditorContainer from "./EditorContainer.js";
-import CustomContextMenu from "./CustomContextMenu.js";
-import Handler from "./handlers.js";
+import {getPointerPosition, getPointerPositionY} from "../../drag/GetPosition.js";
+import EditorContainer from "../EditorContainer.js";
+import CustomContextMenu from "../CustomContextMenu.js";
+import Handler from "./Handler.js";
 
 export default class WindowBar extends Handler {
     leftPanelSectionFile;
@@ -46,7 +46,6 @@ export default class WindowBar extends Handler {
                     if (newValue === "1") {
                         // if selection-count is 1 and this.windowBar is not selected
                         if (!this.windowBar.classList.contains('selected')) {
-                            console.log('setting active');
                             this.setHTMLForSelected();
                         }
                     }

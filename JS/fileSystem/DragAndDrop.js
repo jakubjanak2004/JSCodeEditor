@@ -1,4 +1,4 @@
-import { LeftPanelSectionFolder } from "../leftPanel.js";
+import { DirectoryFolder } from "./directory/DirectoryFolder.js";
 
 export function dragAndDropFiles() {
   const dropZone = document.querySelector(".drag-and-drop-panel");
@@ -34,7 +34,6 @@ export function dragAndDropFiles() {
   async function handleFiles(files) {
     for (const item of files) {
       const handle = await item.getAsFileSystemHandle();
-      console.log(handle)
 
       if (handle) {
         processEntry(handle, fileList);
@@ -48,8 +47,8 @@ export function dragAndDropFiles() {
         console.log('expected directory:', file);
       });
     } else if (entry.kind === 'directory') {
-      console.log('folder given:', entry)
-      new LeftPanelSectionFolder(parentFolder, entry);
+      console.log('folder given:', entry.name)
+      new DirectoryFolder(parentFolder, entry);
     }
   }
 }

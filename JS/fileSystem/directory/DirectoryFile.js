@@ -1,86 +1,7 @@
-import WindowBar from "./editorWindows/WindowBar.js";
+import WindowBar from "../../editorComponents/handler/WindowBar.js";
+import Directory from "./Directory.js"
 
-class LeftPanelSection {
-    entry;
-    parentSection;
-    sectionElement;
-    padding;
-    parentFolders = [];
-
-    constructor(parentSection, entry, parentFolder) {
-        this.entry = entry;
-        this.parentSection = parentSection;
-        if (parentFolder) {
-            this.parentFolders.push(parentFolder);
-        }
-
-        this.sectionElement = document.createElement("li");
-        this.parentSection.appendChild(this.sectionElement);
-
-        // calculate the padding
-        let depth = 0;
-        let parent = this.sectionElement.parentElement;
-
-        // Calculate the depth of nesting
-        while (parent) {
-            if (
-                parent.tagName.toLowerCase() === "ul" &&
-                parent.classList.contains("content")
-            ) {
-                depth++;
-            }
-            parent = parent.parentElement;
-        }
-        this.padding = `${depth * 10}px`;
-    }
-}
-
-export class LeftPanelSectionFolder extends LeftPanelSection {
-    collapseButton;
-    content;
-    childFolders = [];
-    childFiles = [];
-
-    constructor(leftPanel, entry, parentFolder) {
-        super(leftPanel, entry, parentFolder);
-        this.entry = entry;
-
-        this.content = document.createElement("ul");
-        this.content.classList.add("content");
-
-        this.collapseButton = document.createElement("button");
-        this.collapseButton.classList.add("collapse-button");
-        this.collapseButton.classList.add("folder");
-        this.collapseButton.innerHTML = `<span class=collapse-sign>></span><span>${entry.name}</span>`;
-        this.collapseButton.style.paddingLeft = this.padding;
-        this.collapseButton.addEventListener("click", () => {
-            this.sectionElement.classList.toggle("opened");
-            this.collapseButton.firstChild.classList.toggle("pressed");
-        });
-
-        this.sectionElement.appendChild(this.collapseButton);
-        this.sectionElement.appendChild(this.content);
-
-        this.loadSubFiles();
-    }
-
-    async loadSubFiles() {
-        for await (const subEntry of this.entry.values()) {
-            if (subEntry.kind === "file") {
-                this.childFiles.push(
-                    new LeftPanelSectionFile(this.content, subEntry, this.entry)
-                );
-            }
-            if (subEntry.kind === "directory") {
-                this.childFolders.push(
-                    new LeftPanelSectionFolder(this.content, subEntry, this.entry)
-                );
-            }
-        }
-    }
-}
-
-export class LeftPanelSectionFile extends LeftPanelSection {
+export default class DirectoryFile extends Directory {
     windowBars = [];
     textContent;
     HTMLTextContent;
@@ -118,7 +39,7 @@ export class LeftPanelSectionFile extends LeftPanelSection {
             if (event.key === 's' && (event.ctrlKey || event.metaKey)) {
                 event.preventDefault();
                 if (!this.contentDirty) return;
-                console.log('ctrl+s on dirty file')
+                console.log('ctrl+s on dirty file, saving...');
                 this.saveContentIntoFile().then(() => {
                     console.log('Contents of', this.name, 'saved');
                 });
@@ -143,7 +64,6 @@ export class LeftPanelSectionFile extends LeftPanelSection {
     async loadTextContent() {
         try {
             // Get the File object from the file handle
-            console.log(this.entry);
             const file = await this.entry.getFile();
 
             // Read the contents of the file as text
@@ -166,7 +86,7 @@ export class LeftPanelSectionFile extends LeftPanelSection {
         this.textContent = newContent;
         this.HTMLTextContent = this.parseContent(newContent);
         this.windowBars.forEach(windowBar => {
-                windowBar.updateContent();
+            windowBar.updateContent();
         });
     }
 
