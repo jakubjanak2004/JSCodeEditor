@@ -1,6 +1,6 @@
 import {getPointerPosition, getPointerPositionY} from "../../drag/GetPosition.js";
 import EditorContainer from "../EditorContainer.js";
-import CustomContextMenu from "../CustomContextMenu.js";
+import WindowBarContextMenu from "../contextMenu/WindowBarContextMenu.js";
 import Handler from "./Handler.js";
 
 export default class WindowBar extends Handler {
@@ -35,8 +35,7 @@ export default class WindowBar extends Handler {
         });
 
         this.windowBar.addEventListener("contextmenu", (event) => {
-            event.preventDefault();
-            CustomContextMenu.show(event, this);
+            WindowBarContextMenu.show(event, this);
         });
 
         const observer = new MutationObserver(mutationsList => {

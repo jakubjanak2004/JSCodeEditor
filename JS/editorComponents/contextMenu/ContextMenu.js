@@ -1,10 +1,8 @@
-import EditorContainer from "./EditorContainer.js";
-
-export default class CustomContextMenu {
+export default class ContextMenu {
     static contextMenu = null;
-    static windowBar = null;
+    static target = null;
 
-    static initialize() {
+    static initialize(options) {
         // Prevent duplicate initialization
         if (this.contextMenu) return;
 
@@ -13,21 +11,8 @@ export default class CustomContextMenu {
 
         const menuList = document.createElement("ul");
 
-        // Create menu items
-        const option1 = document.createElement("li");
-        option1.textContent = "Split Right";
-        option1.addEventListener("click", () => {
-            EditorContainer.splitRight(this.windowBar);
-        });
+        options.forEach(option => menuList.appendChild(option));
 
-        const option2 = document.createElement("li");
-        option2.textContent = "Split Down";
-        option2.addEventListener("click", () => {
-            EditorContainer.splitDown(this.windowBar);
-        });
-        // Append items
-        menuList.appendChild(option1);
-        menuList.appendChild(option2);
         this.contextMenu.appendChild(menuList);
 
         // Append to body
@@ -42,12 +27,12 @@ export default class CustomContextMenu {
         });
     }
 
-    static show(event, windowBar) {
+    static show(event, target) {
         event.preventDefault();
         this.initialize();
 
         // Position the menu
-        this.windowBar = windowBar;
+        this.target = target;
         this.contextMenu.style.top = `${event.clientY}px`;
         this.contextMenu.style.left = `${event.clientX}px`;
         this.contextMenu.style.display = "block";
@@ -56,6 +41,6 @@ export default class CustomContextMenu {
     static hide() {
         if (!this.contextMenu) return;
         this.contextMenu.style.display = "none";
-        this.windowBar = undefined;
+        this.target = undefined;
     }
 }

@@ -1,5 +1,6 @@
 import Directory from "./Directory.js";
 import DirectoryFile from "./DirectoryFile.js";
+import DirectoryContextMenu from "../../editorComponents/contextMenu/DirectoryContextMenu.js";
 
 export class DirectoryFolder extends Directory {
     collapseButton;
@@ -30,6 +31,42 @@ export class DirectoryFolder extends Directory {
         this.loadSubFiles().then(r => {
             console.log('sub files loaded for', this.entry.name)
         });
+
+        document.addEventListener('contextmenu', event => {
+            console.log('contextmenu', event.target);
+            if (event.target === this.collapseButton) {
+                DirectoryContextMenu.show(event, this);
+            }
+        });
+    }
+
+    // todo we have to copy everything and delete the old files
+    async rename(newName) {
+        console.log(this.entry);
+    }
+
+    // todo as first recursively delete all files and folders inside
+    async delete() {
+        this.entry.remove();
+        this.collapseButton.remove();
+        this.content.remove();
+        // todo implement
+        // this.childFolders.forEach(folder => { folder.removeHTML() });
+        // this.childFiles.forEach(file => { file.removeHTML(); });
+    }
+
+    async createNewFile(fileName) {
+        const newFileEntry = await this.entry.getFileHandle(fileName, {create: true});
+        this.childFiles.push(
+            new DirectoryFile(this.content, newFileEntry, this.entry)
+        );
+    }
+
+    async createNewFolder(fileName) {
+        const newFolderEntry = await this.entry.getDirectoryHandle(fileName, {create: true});
+        this.childFolders.push(
+            new DirectoryFolder(this.content, newFolderEntry, this.entry)
+        );
     }
 
     async loadSubFiles() {
