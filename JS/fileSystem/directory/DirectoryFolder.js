@@ -1,6 +1,6 @@
 import Directory from "./Directory.js";
 import DirectoryFile from "./DirectoryFile.js";
-import DirectoryContextMenu from "../../editorComponents/contextMenu/DirectoryContextMenu.js";
+import FolderContextMenu from "../../editorComponents/contextMenu/FolderContextMenu.js";
 
 export class DirectoryFolder extends Directory {
     collapseButton;
@@ -33,9 +33,8 @@ export class DirectoryFolder extends Directory {
         });
 
         document.addEventListener('contextmenu', event => {
-            console.log('contextmenu', event.target);
             if (event.target === this.collapseButton) {
-                DirectoryContextMenu.show(event, this);
+                FolderContextMenu.show(event, this);
             }
         });
     }
@@ -45,14 +44,15 @@ export class DirectoryFolder extends Directory {
         console.log(this.entry);
     }
 
-    // todo as first recursively delete all files and folders inside
     async delete() {
-        this.entry.remove();
         this.collapseButton.remove();
         this.content.remove();
-        // todo implement
-        // this.childFolders.forEach(folder => { folder.removeHTML() });
-        // this.childFiles.forEach(file => { file.removeHTML(); });
+
+        // recursively remove the folders and files inside
+        for (const folder of this.childFolders) { await folder.delete() }
+        for (const file of this.childFiles) { await file.delete(); }
+
+        await this.entry.remove();
     }
 
     async createNewFile(fileName) {

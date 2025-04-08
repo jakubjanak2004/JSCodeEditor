@@ -1,4 +1,5 @@
 export default class Directory {
+    static PADDING_SIZE = 25;
     entry;
     parentDirectory;
     sectionElement;
@@ -29,6 +30,6 @@ export default class Directory {
             }
             parent = parent.parentElement;
         }
-        this.padding = `${depth * 10}px`;
+        this.padding = `${depth * Directory.PADDING_SIZE}px`;
     }
 }

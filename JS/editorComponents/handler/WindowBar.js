@@ -34,7 +34,7 @@ export default class WindowBar extends Handler {
             this.setActive();
         });
 
-        this.windowBar.addEventListener("contextmenu", (event) => {
+        this.windowBar.addEventListener("contextmenu", event => {
             WindowBarContextMenu.show(event, this);
         });
 
@@ -68,6 +68,10 @@ export default class WindowBar extends Handler {
             "touchstart",
             this.startResizing.bind(this)
         );
+    }
+
+    remove() {
+        this.windowBar.remove();
     }
 
     // todo maybe check if is active ad then call setActive()

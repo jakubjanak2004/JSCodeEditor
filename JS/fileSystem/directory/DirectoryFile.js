@@ -1,5 +1,6 @@
 import WindowBar from "../../editorComponents/handler/WindowBar.js";
 import Directory from "./Directory.js"
+import FileContextMenu from "../../editorComponents/contextMenu/FileContextMenu.js";
 
 export default class DirectoryFile extends Directory {
     windowBars = [];
@@ -45,6 +46,25 @@ export default class DirectoryFile extends Directory {
                 });
             }
         });
+
+        document.addEventListener('contextmenu', event => {
+            if (event.target === this.sectionElement) {
+                FileContextMenu.show(event, this);
+            }
+        });
+    }
+
+    // todo implement renaming for files
+    async rename(newName) {
+
+    }
+
+    async delete() {
+        this.sectionElement.remove();
+        for (const windowBar of this.windowBars) {
+            windowBar.remove();
+        }
+        await this.entry.remove();
     }
 
     async saveContentIntoFile() {
