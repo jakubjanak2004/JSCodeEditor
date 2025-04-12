@@ -19,7 +19,7 @@ export default class UDHandler extends Handler {
     }
 
     moveResizing(e) {
-        e.preventDefault();
+        super.moveResizing(e);
 
         if (!this.isHandlerDragging) return;
 
@@ -34,6 +34,7 @@ export default class UDHandler extends Handler {
             return;
         }
 
+        // I am setting the height in specific order to avoid lagging
         if (resizeDelta > 0) {
             this.boxB.style.height = `${this.boxB.offsetHeight - resizeDelta}px`;
             this.boxA.style.height = `${this.boxA.offsetHeight + resizeDelta}px`;

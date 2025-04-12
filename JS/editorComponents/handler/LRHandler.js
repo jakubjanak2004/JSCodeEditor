@@ -14,15 +14,15 @@ export default class LRHandler extends Handler {
 
     startResizing(e) {
         e.preventDefault();
-        if (e.target === this.handler) {
-            this.isHandlerDragging = true;
-            this.handler.classList.add("selected");
-            document.body.style.cursor = "ew-resize";
-        }
+        if (e.target !== this.handler) return;
+        this.isHandlerDragging = true;
+        this.handler.classList.add("selected");
+        document.body.style.cursor = "ew-resize";
+
     }
 
     moveResizing(e) {
-        e.preventDefault();
+        super.moveResizing(e);
 
         if (!this.isHandlerDragging) return;
 
@@ -47,6 +47,7 @@ export default class LRHandler extends Handler {
             return;
         }
 
+        // I am setting the width in specific order to avoid lagging
         if (resizeDelta > 0) {
             this.boxA.style.width = `${this.boxA.offsetWidth + resizeDelta}px`;
             this.boxB.style.width = `${this.boxB.offsetWidth - resizeDelta}px`;
