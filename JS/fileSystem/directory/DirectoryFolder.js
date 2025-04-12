@@ -20,16 +20,19 @@ export class DirectoryFolder extends Directory {
         this.collapseButton.classList.add("folder");
         this.collapseButton.innerHTML = `<span class=collapse-sign>></span><span>${entry.name}</span>`;
         this.collapseButton.style.paddingLeft = this.padding;
-        this.collapseButton.addEventListener("click", () => {
-            this.sectionElement.classList.toggle("opened");
-            this.collapseButton.firstChild.classList.toggle("pressed");
-        });
-
         this.sectionElement.appendChild(this.collapseButton);
         this.sectionElement.appendChild(this.content);
 
-        this.loadSubFiles().then(r => {
-            console.log('sub files loaded for', this.entry.name)
+        this.collapseButton.addEventListener("click", () => {
+            // subDirectories are lazy-loaded when the user opens the Folder
+            this.loadSubFiles().then(() => {
+                console.log('sub files loaded for', this.entry.name)
+            });
+        }, {once: true});
+
+        this.collapseButton.addEventListener("click", () => {
+            this.sectionElement.classList.toggle("opened");
+            this.collapseButton.firstChild.classList.toggle("pressed");
         });
 
         document.addEventListener('contextmenu', event => {
@@ -39,18 +42,17 @@ export class DirectoryFolder extends Directory {
         });
     }
 
-    // todo we have to copy everything and delete the old files
-    async rename(newName) {
-        console.log(this.entry);
-    }
-
     async delete() {
         this.collapseButton.remove();
         this.content.remove();
 
         // recursively remove the folders and files inside
-        for (const folder of this.childFolders) { await folder.delete() }
-        for (const file of this.childFiles) { await file.delete(); }
+        for (const folder of this.childFolders) {
+            await folder.delete()
+        }
+        for (const file of this.childFiles) {
+            await file.delete();
+        }
 
         await this.entry.remove();
     }
