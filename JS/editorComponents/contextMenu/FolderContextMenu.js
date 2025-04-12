@@ -1,7 +1,8 @@
 import DirectoryContextMenu from "./DirectoryContextMenu.js";
+import ContextMenu from "./ContextMenu.js";
 
 export default class FolderContextMenu extends DirectoryContextMenu {
-    static initialize() {
+    static show(event, target, optionsPrepend = [], optionsAppend = []) {
         const option1 = document.createElement("li");
         option1.textContent = "New File";
         option1.addEventListener("click", () => {
@@ -16,6 +17,6 @@ export default class FolderContextMenu extends DirectoryContextMenu {
             this.target.createNewFolder(newFolderName);
         });
 
-        super.initialize([option1, option2]);
+        DirectoryContextMenu.show(event, target, [option1, option2]);
     }
 }

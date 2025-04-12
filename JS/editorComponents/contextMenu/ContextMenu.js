@@ -1,25 +1,35 @@
 export default class ContextMenu {
     static contextMenu = null;
     static target = null;
+    contextMenuElement;
+    menuList;
 
-    static initialize(options) {
+    static initialize(options = []) {
         // Prevent duplicate initialization
-        if (this.contextMenu) return;
+        if (ContextMenu.contextMenu) {
+            // if instance exists update the options
+            ContextMenu.contextMenu.setOptions(options);
+            return;
+        }
 
-        this.contextMenu = document.createElement("div");
-        this.contextMenu.classList.add("context-menu");
+        ContextMenu.contextMenu = new ContextMenu(options);
+    }
 
-        const menuList = document.createElement("ul");
+    constructor(options) {
+        this.contextMenuElement = document.createElement("div");
+        this.contextMenuElement.classList.add("context-menu");
 
-        options.forEach(option => menuList.appendChild(option));
+        this.menuList = document.createElement("ul");
 
-        this.contextMenu.appendChild(menuList);
+        this.setOptions(options);
+
+        this.contextMenuElement.appendChild(this.menuList);
 
         // Append to body
-        document.body.appendChild(this.contextMenu);
+        document.body.appendChild(this.contextMenuElement);
 
         // Hide menu when clicking elsewhere
-        document.addEventListener("click", this.hide.bind(this));
+        document.addEventListener("click", () => this.hide());
 
         // Hide a menu on pressing an Escape key
         document.addEventListener("keydown", event => {
@@ -27,20 +37,26 @@ export default class ContextMenu {
         });
     }
 
-    static show(event, target) {
+    setOptions(options) {
+        this.menuList.innerHTML = "";
+        options.forEach(option => this.menuList.appendChild(option));
+    }
+
+    show(event, target, optionsPrepend = [], optionsAppend = []) {
         event.preventDefault();
-        this.initialize();
+        ContextMenu.initialize(optionsPrepend);
 
         // Position the menu
-        this.target = target;
-        this.contextMenu.style.top = `${event.clientY}px`;
-        this.contextMenu.style.left = `${event.clientX}px`;
-        this.contextMenu.style.display = "block";
+        ContextMenu.target = target;
+        this.contextMenuElement.style.top = `${event.clientY}px`;
+        this.contextMenuElement.style.left = `${event.clientX}px`;
+        this.contextMenuElement.classList.remove("hidden");
     }
 
-    static hide() {
-        if (!this.contextMenu) return;
-        this.contextMenu.style.display = "none";
-        this.target = undefined;
+    hide() {
+        this.contextMenuElement.classList.add("hidden");
+        ContextMenu.target = undefined;
     }
 }
+
+ContextMenu.initialize();

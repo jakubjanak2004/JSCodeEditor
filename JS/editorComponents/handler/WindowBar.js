@@ -34,7 +34,7 @@ export default class WindowBar extends Handler {
             this.setActive();
         });
 
-        this.windowBar.addEventListener("contextmenu", event => {
+        this.windowBar.addEventListener('contextmenu', event => {
             WindowBarContextMenu.show(event, this);
         });
 
