@@ -41,13 +41,7 @@ export default class WindowBar extends Handler {
         const observer = new MutationObserver(mutationsList => {
             for (const mutation of mutationsList) {
                 if (mutation.type === 'attributes' && mutation.attributeName === 'data-selected-count') {
-                    const newValue = this.windowBar.dataset.selectedCount;
-                    if (newValue === "1") {
-                        // if selection-count is 1 and this.windowBar is not selected
-                        if (!this.windowBar.classList.contains('selected')) {
-                            this.setHTMLForSelected();
-                        }
-                    }
+                    this.handleDataSelectedCount();
                 }
             }
         });
@@ -70,11 +64,20 @@ export default class WindowBar extends Handler {
         );
     }
 
+    handleDataSelectedCount() {
+        const newValue = this.windowBar.dataset.selectedCount;
+        if (newValue === "1") {
+            // if selection-count is 1 and this.windowBar is not selected
+            if (!this.windowBar.classList.contains('selected')) {
+                this.setHTMLForSelected();
+            }
+        }
+    }
+
     remove() {
         this.windowBar.remove();
     }
 
-    // todo maybe check if is active ad then call setActive()
     updateContent() {
         this.setActive();
     }
@@ -89,16 +92,21 @@ export default class WindowBar extends Handler {
 
     setHTMLForSelected() {
         this.windowBar.classList.add('selected');
+        this.editorRow.querySelector('.path').textContent = this.leftPanelSectionFile.filePath;
         const codeEdit = this.editorRow.querySelector('.code-edit');
         codeEdit.innerHTML = this.leftPanelSectionFile.HTMLTextContent;
-        codeEdit.onkeyup = (event) => {
-            const content = codeEdit.innerHTML
-                .replace(/<div[^>]*>/gi, '')
-                .replace(/<\/div>(?!.*<\/div>)/s, '')
-                .replace(/<\/div>/gi, '\n');
+        codeEdit.onkeyup = () => {
+            let content = "";
+            const textDivs = codeEdit.querySelectorAll('.text-div');
+            const totalDivs = textDivs.length;
+            textDivs.forEach((line, index) => {
+                content += line.textContent;
+                if (index !== totalDivs - 1) {
+                    content += '\n';
+                }
+            });
             this.leftPanelSectionFile.updateTextContentChanged(content, this);
         }
-        this.editorRow.querySelector('.path').textContent = this.leftPanelSectionFile.filePath;
     }
 
     setSelected() {
@@ -123,6 +131,7 @@ export default class WindowBar extends Handler {
     }
 
     moveResizing(e) {
+        // todo maybe isBarDragged can be moved to the super overridden method
         if (!this.isBarDragged) return;
         this.windowBarGhost.style.left = `${getPointerPositionX(e)}px`;
         this.windowBarGhost.style.top = `${getPointerPositionY(e)}px`;
@@ -133,6 +142,7 @@ export default class WindowBar extends Handler {
         );
     }
 
+    // todo refactor the code here
     getReceiverWindow(x, y, currentBar) {
         const windowBars = document.querySelectorAll(".window-bar:not(.dragging)");
         windowBars.forEach(windowBar => {
@@ -165,7 +175,7 @@ export default class WindowBar extends Handler {
         });
     }
 
-    stopResizing() {
+    stopResizing(e) {
         if (!this.isBarDragged) return;
         this.isBarDragged = false;
         document.body.removeChild(this.windowBarGhost);
