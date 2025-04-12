@@ -4,7 +4,7 @@ export function dragAndDropFiles() {
   const dropZone = document.querySelector(".drag-and-drop-panel");
   const fileList = document.getElementById("left-panel");
 
-  // Prevent default drag behaviors
+  // Prevent default utils behaviors
   ["dragenter", "dragover", "dragleave", "drop"].forEach((event) => {
     dropZone.addEventListener(event, (e) => e.preventDefault());
     document.body.addEventListener(event, (e) => e.preventDefault());
