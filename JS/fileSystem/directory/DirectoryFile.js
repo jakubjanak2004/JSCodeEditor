@@ -25,7 +25,7 @@ export default class DirectoryFile extends Directory {
 
             // load Content on first WindowBar creation
             if (!this.textContent) {
-                console.log('Loading the text content');
+                console.log('Loading the text content for', this.name);
                 this.loadTextContent().then(() => {
                     this.windowBars.push(new WindowBar(this));
                     this.windowBars[this.windowBars.length - 1].setActive();
@@ -40,7 +40,7 @@ export default class DirectoryFile extends Directory {
             if (event.key === 's' && (event.ctrlKey || event.metaKey)) {
                 event.preventDefault();
                 if (!this.contentDirty) return;
-                console.log('ctrl+s on dirty file, saving...');
+                console.log('ctrl+s on dirty file, saving', this.name);
                 this.saveContentIntoFile().then(() => {
                     console.log('Contents of', this.name, 'saved');
                 });

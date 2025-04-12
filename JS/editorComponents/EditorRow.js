@@ -98,10 +98,10 @@ export default class EditorRow {
             event.target.firstElementChild.listenToKeyPressed(event);
         });
 
-        document.addEventListener("selectionchange", this.reactToSelectionChange.bind(this));
+        document.addEventListener("selectionchange", () => this.reactToSelectionChange());
 
         //add txt as div rows
-        document.addEventListener("DOMContentLoaded", e => {
+        document.addEventListener("DOMContentLoaded", () => {
             const newDiv = document.createElement("div");
             newDiv.classList.add("text-div");
             this.codeEdit.appendChild(newDiv);
@@ -141,7 +141,10 @@ export default class EditorRow {
         this.createTextDiv(node);
     }
 
+    // todo entering in the text-div therefore creating new text divs the selection stops being triggered after few presses of the enter
     reactToSelectionChange() {
+        // todo seeing the problem here
+        console.log('react on selection being changed');
         const selection = window.getSelection();
         if (selection.rangeCount <= 0) return;
         document
@@ -163,7 +166,7 @@ export default class EditorRow {
 
     createTextDiv(node) {
         node.listenToKeyPressed = function (e) {
-            const key = e.key;
+            // const key = e.key;
             // console.log("handling key event from text div: ", key);
         };
     }
@@ -201,7 +204,8 @@ export default class EditorRow {
         ).length;
 
         while (currentLineNumbers < numLines) {
-            this.lineNumbers.innerHTML += `<div class="line-numbers-block">
+            this.lineNumbers.innerHTML +=
+                `<div class="line-numbers-block">
                     <div class="line-number">${currentLineNumbers + 1}</div>
                     <div class="highlighter"></div>
                 </div>`;
