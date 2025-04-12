@@ -19,7 +19,7 @@
   /* color variables */
   --color-1: rgb(45, 45, 45);
   --color-2: #1f1f1f;
-  --color-3: rgb(24, 24, 24); 
+  --color-3: rgb(24, 24, 24);
   --color-4: rgb(170, 170, 170);
   --color-5: rgb(55, 55, 55);
   --color-6: rgb(76, 76, 76);
@@ -39,8 +39,8 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 12px; 
-  height: 12px; 
+  width: 12px;
+  height: 12px;
 }
 
 ::-webkit-scrollbar-track {
@@ -49,8 +49,8 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #343030; 
-  border-radius: 0; 
+  background: #343030;
+  border-radius: 0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
