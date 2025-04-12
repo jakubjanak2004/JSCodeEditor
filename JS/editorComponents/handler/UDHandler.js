@@ -1,4 +1,4 @@
-import {getPointerPositionY} from "../../drag/GetPosition.js";
+import {getPointerPositionY} from "../../utils/GetPosition.js";
 import Handler, {boxMinHeight} from "./Handler.js";
 
 export default class UDHandler extends Handler {

@@ -20,7 +20,6 @@ export default class EditorColumn {
         this.editorColumn = document.createElement("div");
         this.editorColumn.classList.add("text-editor-column");
         editorContainer.appendChild(this.editorColumn);
-        this.editorRows.push(new EditorRow(this.editorColumn));
 
         this.LRHandler = new LRHandler(lrHandler);
 

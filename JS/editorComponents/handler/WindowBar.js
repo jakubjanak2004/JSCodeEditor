@@ -1,4 +1,4 @@
-import {getPointerPosition, getPointerPositionY} from "../../drag/GetPosition.js";
+import {getPointerPositionX, getPointerPositionY} from "../../utils/GetPosition.js";
 import EditorContainer from "../EditorContainer.js";
 import WindowBarContextMenu from "../contextMenu/WindowBarContextMenu.js";
 import Handler from "./Handler.js";
@@ -124,10 +124,10 @@ export default class WindowBar extends Handler {
 
     moveResizing(e) {
         if (!this.isBarDragged) return;
-        this.windowBarGhost.style.left = `${getPointerPosition(e)}px`;
+        this.windowBarGhost.style.left = `${getPointerPositionX(e)}px`;
         this.windowBarGhost.style.top = `${getPointerPositionY(e)}px`;
         this.getReceiverWindow(
-            getPointerPosition(e),
+            getPointerPositionX(e),
             getPointerPositionY(e),
             this.windowBar
         );

@@ -1,4 +1,4 @@
-import {getPointerPosition} from "../../drag/GetPosition.js";
+import {getPointerPositionX} from "../../utils/GetPosition.js";
 import Handler, {boxMinWidth} from "./Handler.js";
 
 export default class LRHandler extends Handler {
@@ -9,9 +9,7 @@ export default class LRHandler extends Handler {
         this.boxB = this.handler.nextElementSibling;
 
         this.boxA.style.width = `${this.boxA.offsetWidth}px`;
-        // this.boxA.style.flexGrow = "0";
         this.boxB.style.width = `${this.boxB.offsetWidth}px`;
-        // this.boxB.style.flexGrow = "0";
     }
 
     startResizing(e) {
@@ -29,7 +27,7 @@ export default class LRHandler extends Handler {
         if (!this.isHandlerDragging) return;
 
         const resizeDelta =
-            getPointerPosition(e) - this.boxA.offsetLeft - this.boxA.offsetWidth;
+            getPointerPositionX(e) - this.boxA.offsetLeft - this.boxA.offsetWidth;
 
         if (this.boxA.dataset.isCollapsable === "true") {
             if (this.boxA.offsetWidth + resizeDelta < this.boxA.offsetWidth / 2) {

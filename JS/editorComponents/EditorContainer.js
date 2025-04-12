@@ -45,3 +45,6 @@ export default class EditorContainer {
         newEditorRow.UDHandler = new UDHandler(udHandler);
     }
 }
+
+// adding one editor column by default
+EditorContainer.editorColumns.push(new EditorColumn(EditorContainer.editorContainer));
