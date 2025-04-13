@@ -18,7 +18,7 @@ export class DirectoryFolder extends Directory {
         this.collapseButton = document.createElement("button");
         this.collapseButton.classList.add("collapse-button");
         this.collapseButton.classList.add("folder");
-        this.collapseButton.innerHTML = `<span class=collapse-sign>></span><span>${entry.name}</span>`;
+        this.collapseButton.innerHTML = `<span class=collapse-sign>></span><span>${this.name}</span>`;
         this.collapseButton.style.paddingLeft = this.padding;
         this.sectionElement.appendChild(this.collapseButton);
         this.sectionElement.appendChild(this.content);

@@ -16,7 +16,7 @@ export default class WindowBar extends Handler {
         this.leftPanelSectionFile = leftPanelSectionFile;
         this.windowBar = document.createElement("div");
         this.windowBar.classList.add("window-bar");
-        this.windowBar.textContent = this.leftPanelSectionFile.name;
+        this.windowBar.innerHTML = `<p class="text-truncate">${this.leftPanelSectionFile.name}</p>`;
         const windowBarButton = document.createElement("button");
         windowBarButton.textContent = "x";
 
@@ -54,10 +54,10 @@ export default class WindowBar extends Handler {
         // dragging and receiving logic
         this.windowBarGhost = windowBarGhost;
         this.windowBarGhost.classList.add("window-bar");
-        this.windowBarGhost.classList.add("dragging");
+        this.windowBarGhost.classList.add("ghost");
         this.windowBarGhost.innerHTML = this.windowBar.innerHTML;
 
-        this.windowBar.addEventListener("mousedown", this.startResizing.bind(this));
+        this.windowBar.addEventListener("mousedown", e => this.startResizing(e));
         this.windowBar.addEventListener(
             "touchstart",
             this.startResizing.bind(this)
@@ -124,6 +124,7 @@ export default class WindowBar extends Handler {
     }
 
     startResizing(e) {
+        console.log('here clicking', e.target)
         if (e.target !== this.windowBar) return;
         this.isBarDragged = true;
         document.body.appendChild(this.windowBarGhost);
@@ -144,7 +145,7 @@ export default class WindowBar extends Handler {
 
     // todo refactor the code here
     getReceiverWindow(x, y, currentBar) {
-        const windowBars = document.querySelectorAll(".window-bar:not(.dragging)");
+        const windowBars = document.querySelectorAll(".window-bar:not(.ghost)");
         windowBars.forEach(windowBar => {
             if (windowBar !== currentBar) {
                 let wBPosition = windowBar.getBoundingClientRect();

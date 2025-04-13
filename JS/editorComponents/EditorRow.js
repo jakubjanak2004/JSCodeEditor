@@ -25,7 +25,7 @@ export default class EditorRow {
 
         // Create the path section
         this.path = document.createElement("section");
-        this.path.classList.add("path");
+        this.path.classList.add("path", "text-truncate");
 
         // Append elements to the header
         this.textEditorHeader.appendChild(this.windowManagement);

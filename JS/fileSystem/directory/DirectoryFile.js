@@ -7,7 +7,6 @@ export default class DirectoryFile extends Directory {
     textContent;
     HTMLTextContent;
     filePath = "";
-    name;
     contentDirty = false;
 
     constructor(leftPanel, entry, parentFolder) {

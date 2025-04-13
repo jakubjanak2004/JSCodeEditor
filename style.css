@@ -136,6 +136,7 @@ footer {
   padding: 0;
   cursor: ew-resize;
   flex: 0 0 auto;
+  background-color: rgba(0, 0, 0, 0);
 }
 
 .ud-handler {
@@ -301,6 +302,11 @@ nav button.selected {
   border: none;
 }
 
+.text-truncate {
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 #left-panel section.opened {
   height: 100%;
 }
@@ -349,21 +355,31 @@ nav button.selected {
 .window-bar {
   user-select: none;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  padding-left: 10px;
   align-items: center;
-  padding: 0 10px;
   cursor: pointer;
   background-color: var(--color-2);
   height: 40px;
-
+  width: 100px;
   position: relative;
 }
 
+.window-bar p{
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
 .window-bar button {
+  width: 30px;
+  flex-shrink: 0;
   background: none;
-  margin-left: 10px;
   border: none;
   color: inherit;
+}
+
+.window-bar:not(.selected) button {
+  visibility: hidden;
 }
 
 .window-bar.left-highlight::before {
@@ -386,8 +402,13 @@ nav button.selected {
   background-color:white;
 }
 
-.window-bar.dragging{
+.window-bar.ghost{
   position: absolute;
+  padding-right: 10px;
+  justify-content: center;
+}
+.window-bar.ghost button {
+  display: none;
 }
 
 .window-bar.selected {
