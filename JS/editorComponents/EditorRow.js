@@ -56,7 +56,7 @@ export default class EditorRow {
         this.editorColumn.appendChild(this.textEditorRow);
 
         // adding row numbers
-        const resizeObserver = new ResizeObserver(this.updateLinNumber.bind(this));
+        const resizeObserver = new ResizeObserver(this.updateLineNumber.bind(this));
         resizeObserver.observe(this.codeEdit);
 
         // adding listen to key-pressed function
@@ -79,33 +79,27 @@ export default class EditorRow {
             }
         });
 
-        observer.observe(this.codeEdit, { childList: true });
-        observer.observe(this.windowManagement, { childList: true });
+        observer.observe(this.codeEdit, {childList: true});
+        observer.observe(this.windowManagement, {childList: true});
 
-        this.codeEdit.addEventListener("keydown", event => {
-            if (event.key === "Enter") {
-                return;
-            }
-            const textDivs = this.codeEdit.querySelectorAll(".text-div");
-            if (
-                textDivs.length === 1 &&
-                event.key === "Backspace" &&
-                !textDivs[0].textContent
-            ) {
-                event.preventDefault();
-                return;
-            }
-            event.target.firstElementChild.listenToKeyPressed(event);
-        });
+        // todo not needed for now
+        // this.codeEdit.addEventListener("keydown", event => {
+        //     if (event.key === "Enter") {
+        //         return;
+        //     }
+        //     const textDivs = this.codeEdit.querySelectorAll(".text-div");
+        //     if (
+        //         textDivs.length === 1 &&
+        //         event.key === "Backspace" &&
+        //         !textDivs[0].textContent
+        //     ) {
+        //         event.preventDefault();
+        //         return;
+        //     }
+        //     // event.target.firstElementChild.listenToKeyPressed(event);
+        // });
 
         document.addEventListener("selectionchange", () => this.reactToSelectionChange());
-
-        //add txt as div rows
-        document.addEventListener("DOMContentLoaded", () => {
-            const newDiv = document.createElement("div");
-            newDiv.classList.add("text-div");
-            this.codeEdit.appendChild(newDiv);
-        });
     }
 
     reactOnWindowBarAdded(node) {
@@ -164,11 +158,20 @@ export default class EditorRow {
         lineNumbers[nthLine].classList.add('selected');
     }
 
+    // todo decide if leave or remove
     createTextDiv(node) {
-        node.listenToKeyPressed = function (e) {
-            // const key = e.key;
-            // console.log("handling key event from text div: ", key);
-        };
+        // if (!node.classList.contains('text-div')) return;
+        // // handling new focused text-div
+        // console.log('counting previous elements', this.countPreviousElements(node, 'text-div'), node)
+        // document
+        //     .querySelectorAll(".text-div.focused")
+        //     .forEach(textDiv => textDiv.classList.remove("focused"));
+        // node.classList.add("focused");
+        //
+        // const nthLine = this.countPreviousElements(node, 'text-div');
+        // const lineNumbers = node.parentElement.parentElement.querySelectorAll('.line-number');
+        // document.querySelectorAll('.line-number.selected').forEach(lineNumber => lineNumber.classList.remove('selected'));
+        // lineNumbers[nthLine].classList.add('selected');
     }
 
     countPreviousElements(element, className) {
@@ -197,7 +200,7 @@ export default class EditorRow {
         return Math.floor(height / lineHeight);
     }
 
-    updateLinNumber() {
+    updateLineNumber() {
         const numLines = this.countLines();
         let currentLineNumbers = this.lineNumbers.querySelectorAll(
             ".line-numbers-block"
