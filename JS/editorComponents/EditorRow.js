@@ -113,10 +113,13 @@ export default class EditorRow {
         if (!node.classList.contains('window-bar')) {
             return;
         }
-        // decrement selectedCount on windowBarRemoved
-        this.textEditorRow.querySelectorAll('.window-bar').forEach(windowBar => {
-            windowBar.dataset.selectedCount = parseInt(windowBar.dataset.selectedCount) - 1 + '';
-        })
+        // skip the decrement if the windowBar was removed and added to this row
+        if (node.parentElement !== this.windowManagement) {
+            // decrement selectedCount on windowBarRemoved
+            this.textEditorRow.querySelectorAll('.window-bar').forEach(windowBar => {
+                windowBar.dataset.selectedCount = parseInt(windowBar.dataset.selectedCount) - 1 + '';
+            })
+        }
         this.windowBarCount--;
         if (!this.windowBarCount) {
             // remove this

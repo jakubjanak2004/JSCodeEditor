@@ -118,13 +118,12 @@ export default class WindowBar extends Handler {
         this.editorRow.querySelectorAll('.window-bar').forEach(windowBar => {
             let selectedCountInt = parseInt(windowBar.dataset.selectedCount);
             if (!wasSelection || selectedCountInt <= wasSelection) {
-                windowBar.dataset.selectedCount = selectedCountInt + 1 + '';
+                windowBar.dataset.selectedCount = selectedCountInt + 1 + "";
             }
         })
     }
 
     startResizing(e) {
-        console.log('here clicking', e.target)
         if (e.target !== this.windowBar) return;
         this.isBarDragged = true;
         document.body.appendChild(this.windowBarGhost);
@@ -188,7 +187,7 @@ export default class WindowBar extends Handler {
             receiveElement.parentElement.insertBefore(this.windowBar, receiveElement);
             receiveElement.classList.remove("left-highlight");
             this.editorRow = receiveElement.parentElement.parentElement.parentElement;
-            this.setActive()
+            this.setActive();
             return;
         }
         receiveElement = document.querySelector(".window-bar.right-highlight");
@@ -197,7 +196,7 @@ export default class WindowBar extends Handler {
             receiveElement.parentElement.appendChild(this.windowBar);
             receiveElement.classList.remove("right-highlight");
             this.editorRow = receiveElement.parentElement.parentElement.parentElement;
-            this.setActive()
+            this.setActive();
         }
     }
 }
