@@ -2,6 +2,7 @@ import {getPointerPositionX, getPointerPositionY} from "../../utils/GetPosition.
 import EditorContainer from "../EditorContainer.js";
 import WindowBarContextMenu from "../contextMenu/WindowBarContextMenu.js";
 import Handler from "./Handler.js";
+import GlobalPath from "../GlobalPath.js";
 
 export default class WindowBar extends Handler {
     leftPanelSectionFile;
@@ -18,17 +19,20 @@ export default class WindowBar extends Handler {
         this.windowBar.classList.add("window-bar");
         this.windowBar.innerHTML = `<p class="text-truncate">${this.leftPanelSectionFile.name}</p>`;
         const windowBarButton = document.createElement("button");
+        // instead of x add svg
         windowBarButton.textContent = "x";
         this.windowBar.appendChild(windowBarButton);
         this.editorRow = EditorContainer.addNewWindowBar(this).textEditorRow;
 
-        this.windowBar.addEventListener("dblclick", () => {
+        // todo bugs the ghost visible as double click performed
+        this.windowBar.addEventListener("mousedown", () => {
             this.setActive();
-        }, true);
+        });
 
-        windowBarButton.addEventListener("click", event => {
+        windowBarButton.addEventListener("mousedown", e => {
             this.windowBar.remove();
             this.leftPanelSectionFile.removeWindowBar(this);
+            e.stopPropagation();
         });
 
         this.windowBar.addEventListener('contextmenu', event => {
@@ -76,19 +80,23 @@ export default class WindowBar extends Handler {
     }
 
     updateContent() {
+        // todo determine if should true be passed into the argument
         this.setActive();
     }
 
-    setActive() {
+    setActive(haveMovedElsewhere=false) {
+        console.log('setting path', this.leftPanelSectionFile.filePath)
+        GlobalPath.setPath(this.leftPanelSectionFile.filePath);
+        if (haveMovedElsewhere) delete this.windowBar.dataset.selectedCount;
         this.windowBar.parentElement.querySelectorAll('.window-bar')
             .forEach(windowBar => windowBar.classList.remove('selected'));
-        this.windowBar.classList.add("selected");
         this.setSelected();
         this.setHTMLForSelected();
     }
 
     setHTMLForSelected() {
         this.windowBar.classList.add('selected');
+        GlobalPath.setPath(this.leftPanelSectionFile.filePath);
         this.editorRow.querySelector('.path').textContent = this.leftPanelSectionFile.filePath;
         const codeEdit = this.editorRow.querySelector('.code-edit');
         codeEdit.innerHTML = this.leftPanelSectionFile.HTMLTextContent;
@@ -106,6 +114,7 @@ export default class WindowBar extends Handler {
         }
     }
 
+    // todo debug
     setSelected() {
         let wasSelection;
         if (this.windowBar.dataset.selectedCount) {
@@ -123,13 +132,15 @@ export default class WindowBar extends Handler {
     startResizing(e) {
         if (e.target !== this.windowBar) return;
         this.isBarDragged = true;
-        document.body.appendChild(this.windowBarGhost);
         document.body.style.cursor = "pointer";
     }
 
     moveResizing(e) {
         // todo maybe isBarDragged can be moved to the super overridden method
         if (!this.isBarDragged) return;
+        if (!this.windowBarGhost.isConnected) {
+            document.body.appendChild(this.windowBarGhost);
+        }
         this.windowBarGhost.style.left = `${getPointerPositionX(e)}px`;
         this.windowBarGhost.style.top = `${getPointerPositionY(e)}px`;
         this.getReceiverWindow(
@@ -139,7 +150,6 @@ export default class WindowBar extends Handler {
         );
     }
 
-    // todo refactor the code here
     getReceiverWindow(x, y, currentBar) {
         const windowBars = document.querySelectorAll(".window-bar:not(.ghost)");
 
@@ -162,10 +172,10 @@ export default class WindowBar extends Handler {
             const isLastChild = windowBar === windowBar.parentElement.lastElementChild;
             if (isLastChild) {
                 const parent = windowBar.parentElement;
-                const parentRightEdge = parent.offsetLeft + parent.offsetWidth;
+                const parentRightEdge = parent.getBoundingClientRect().left + parent.offsetWidth;
                 const relativeX = x - rect.left - windowBar.offsetWidth;
-                const isRightClose = relativeX >= -10 && x < parentRightEdge - 10;
 
+                const isRightClose = relativeX >= -10 && x < parentRightEdge - 10;
                 if (isRightClose && isVerticalClose) {
                     windowBar.classList.add("right-highlight");
                 }
@@ -185,7 +195,7 @@ export default class WindowBar extends Handler {
             receiveElement.parentElement.insertBefore(this.windowBar, receiveElement);
             receiveElement.classList.remove("left-highlight");
             this.editorRow = receiveElement.parentElement.parentElement.parentElement;
-            this.setActive();
+            this.setActive(true);
             return;
         }
         receiveElement = document.querySelector(".window-bar.right-highlight");
@@ -194,7 +204,7 @@ export default class WindowBar extends Handler {
             receiveElement.parentElement.appendChild(this.windowBar);
             receiveElement.classList.remove("right-highlight");
             this.editorRow = receiveElement.parentElement.parentElement.parentElement;
-            this.setActive();
+            this.setActive(true);
         }
     }
 }

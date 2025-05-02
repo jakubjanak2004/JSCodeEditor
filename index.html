@@ -9,22 +9,17 @@
 </head>
 <body>
 <header class="main-header">
-<!--    <button class="arrow-button clickable">&larr;</button>-->
-<!--    <button class="arrow-button">&rarr;</button>-->
-<!--    <button id="search-button">Workspace</button>-->
 </header>
 
 <section id="editor-container">
     <!-- left side navigation -->
     <nav>
         <section class="up-align">
-            <button class="selected">fldrs</button>
-            <button>next1</button>
-            <button>next2</button>
+            <button class="left-bar-button directories-button selected">fldrs</button>
+            <!-- More buttons can be added -->
         </section>
         <section class="down-align">
-            <button>prfl</button>
-            <button>stngs</button>
+            <!-- More buttons can be added -->
         </section>
     </nav>
     <!-- left panel editor -->
@@ -32,22 +27,29 @@
         <li id="main">
             <h3>EXPLORER</h3>
         </li>
-        <li id="search">
-            <button class="collapse-button">
-                <span class="collapse-sign">&gt;</span><span>SEARCH</span>
-            </button>
-            <section class="content">content in the collapsable div</section>
-        </li>
     </ul>
 </section>
 
-<section class="drag-and-drop-panel">
-    <h1>Drop Files</h1>
-</section>
+<section class="drag-and-drop-panel"></section>
 
 <footer>
-    <div class="left-align">left align</div>
-    <div class="right-align">right align</div>
+    <div class="left-align">
+        <div id="global-path"></div>
+    </div>
+    <div class="right-align">
+        <svg class="wifi-sign" viewBox="0 0 64 55">
+            <!-- Outer arc with sharp edges -->
+            <path class="arc" d="M12 24C22.5 13.5 41.5 13.5 52 24" stroke="white" stroke-width="4" fill="none"
+                  stroke-linecap="butt"/>
+
+            <!-- Inner arc with sharp edges -->
+            <path class="arc" d="M20 32C27.5 24.5 36.5 24.5 44 32" stroke="white" stroke-width="4" fill="none"
+                  stroke-linecap="butt"/>
+
+            <!-- Bottom curved triangle -->
+            <path class="triangle" d="M28,39 C30,36 34,36 36,39 L32,43 Z" fill="white"/>
+        </svg>
+    </div>
 </footer>
 </body>
 </html>

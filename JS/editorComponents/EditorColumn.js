@@ -1,6 +1,7 @@
 import EditorContainer from "./EditorContainer.js";
 import LRHandler from "./handler/LRHandler.js";
 import EditorRow from "./EditorRow.js";
+import GlobalPath from "./GlobalPath.js";
 
 export default class EditorColumn {
     LRHandler;
@@ -76,6 +77,15 @@ export default class EditorColumn {
                 this.LRHandler.handler.remove();
                 observer.disconnect();
                 EditorContainer.removeColumn(this);
+            } else {
+                // if row is removed, and it is the last column than erase the Global Path
+                mutations.forEach((mutation) => {
+                    mutation.removedNodes.forEach((node) => {
+                        if (node instanceof HTMLElement && node.classList.contains('text-editor-row')) {
+                            GlobalPath.erasePath();
+                        }
+                    });
+                });
             }
 
             mutations.forEach(mutation => {

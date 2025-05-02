@@ -1,11 +1,12 @@
 import {getPointerPositionX} from "../../utils/GetPosition.js";
-import Handler, {boxMinWidth} from "./Handler.js";
+import Handler from "./Handler.js";
 
 export default class LRHandler extends Handler {
     constructor(handler) {
         super(handler);
 
         this.boxA = this.handler.previousElementSibling;
+        this.boxAMinWidth = parseFloat(getComputedStyle(this.boxA).minWidth);
         this.boxB = this.handler.nextElementSibling;
 
         this.boxA.style.width = `${this.boxA.offsetWidth}px`;
@@ -39,11 +40,11 @@ export default class LRHandler extends Handler {
             }
         }
 
-        if (this.boxA.offsetWidth + resizeDelta <= boxMinWidth) {
+        if (this.boxA.offsetWidth + resizeDelta <= this.boxAMinWidth) {
             return;
         }
 
-        if (this.boxB.offsetWidth - resizeDelta <= boxMinWidth) {
+        if (this.boxB.offsetWidth - resizeDelta <= this.boxAMinWidth) {
             return;
         }
 

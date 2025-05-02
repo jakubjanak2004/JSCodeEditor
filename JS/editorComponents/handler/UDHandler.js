@@ -1,11 +1,12 @@
 import {getPointerPositionY} from "../../utils/GetPosition.js";
-import Handler, {boxMinHeight} from "./Handler.js";
+import Handler from "./Handler.js";
 
 export default class UDHandler extends Handler {
     constructor(handler) {
         super(handler);
 
         this.boxA = this.handler.previousElementSibling;
+        this.boxAMinHeight = parseFloat(getComputedStyle(this.boxA).minHeight);
         this.boxB = this.handler.nextElementSibling;
     }
 
@@ -26,11 +27,13 @@ export default class UDHandler extends Handler {
         const resizeDelta =
             getPointerPositionY(e) - this.boxA.offsetTop - this.boxA.offsetHeight;
 
-        if (this.boxA.offsetHeight + resizeDelta <= boxMinHeight) {
+        console.log(this.boxAMinHeight)
+
+        if (this.boxA.offsetHeight + resizeDelta <= this.boxAMinHeight) {
             return;
         }
 
-        if (this.boxB.offsetHeight - resizeDelta <= boxMinHeight) {
+        if (this.boxB.offsetHeight - resizeDelta <= this.boxAMinHeight) {
             return;
         }
 

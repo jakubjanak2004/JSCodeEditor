@@ -1,3 +1,5 @@
+import GlobalPath from "./GlobalPath.js";
+
 export default class EditorRow {
     textEditorRow;
     textEditorHeader;
@@ -154,6 +156,12 @@ export default class EditorRow {
                 : selection.anchorNode;
 
         selectedElement.classList.add("focused");
+        // setting GlobalPath to the selected file path
+        const selectedRow = document.querySelector('.text-editor-row:has(.text-div.focused)');
+        if (selectedRow) {
+            const path = selectedRow.querySelector('.path');
+            GlobalPath.setPath(path.textContent);
+        }
 
         const nthLine = this.countPreviousElements(selectedElement, 'text-div');
         const lineNumbers = selectedElement.parentElement.parentElement.querySelectorAll('.line-number');

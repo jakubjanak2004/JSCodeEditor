@@ -1,6 +1,3 @@
-export const boxMinWidth = 150;
-export const boxMinHeight = 60;
-
 export default class Handler {
     handler;
     boxA;
@@ -72,4 +69,7 @@ export default class Handler {
     moveResizing(e) {
         e.preventDefault();
     }
+}
+
+export class boxMinHeight {
 }

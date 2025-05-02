@@ -23,7 +23,7 @@ export default class EditorContainer {
         this.editorColumns.push(newEditorColumn);
         windowBar.editorRow.querySelector('.window-management').removeChild(windowBar.windowBar);
         newEditorColumn.addWindow(windowBar);
-        windowBar.setActive();
+        windowBar.setActive(true);
     }
 
     static splitDown(windowBar) {
@@ -40,7 +40,7 @@ export default class EditorContainer {
         let newEditorRow = new EditorRow(editorColumn);
         windowBar.editorRow.querySelector('.window-management').removeChild(windowBar.windowBar);
         newEditorRow.addWindow(windowBar);
-        windowBar.setActive();
+        windowBar.setActive(true);
 
         newEditorRow.UDHandler = new UDHandler(udHandler);
     }

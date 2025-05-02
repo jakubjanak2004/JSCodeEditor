@@ -27,11 +27,11 @@ export default class DirectoryFile extends Directory {
                 console.log('Loading the text content for', this.name);
                 this.loadTextContent().then(() => {
                     this.windowBars.push(new WindowBar(this));
-                    this.windowBars[this.windowBars.length - 1].setActive();
+                    this.windowBars[this.windowBars.length - 1].setActive(true);
                 });
             } else {
                 this.windowBars.push(new WindowBar(this));
-                this.windowBars[this.windowBars.length - 1].setActive();
+                this.windowBars[this.windowBars.length - 1].setActive(true);
             }
         });
 
@@ -51,11 +51,6 @@ export default class DirectoryFile extends Directory {
                 FileContextMenu.show(event, this);
             }
         });
-    }
-
-    // todo implement renaming for files
-    async rename(newName) {
-
     }
 
     async delete() {
@@ -128,6 +123,7 @@ export default class DirectoryFile extends Directory {
         // Split content by newlines
         const lines = content.split("\n");
 
+        // todo rendered as html
         lines.forEach(line => {
             HTMLContent += `<div class="text-div">${line}</div>`;
         });
