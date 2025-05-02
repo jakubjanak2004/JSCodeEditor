@@ -19,19 +19,16 @@ export default class WindowBar extends Handler {
         this.windowBar.innerHTML = `<p class="text-truncate">${this.leftPanelSectionFile.name}</p>`;
         const windowBarButton = document.createElement("button");
         windowBarButton.textContent = "x";
-
-        windowBarButton.addEventListener("click", event => {
-            this.windowBar.remove();
-            this.leftPanelSectionFile.removeWindowBar(this);
-        });
-
         this.windowBar.appendChild(windowBarButton);
-
-        // adding a window into editor container
         this.editorRow = EditorContainer.addNewWindowBar(this).textEditorRow;
 
         this.windowBar.addEventListener("dblclick", () => {
             this.setActive();
+        }, true);
+
+        windowBarButton.addEventListener("click", event => {
+            this.windowBar.remove();
+            this.leftPanelSectionFile.removeWindowBar(this);
         });
 
         this.windowBar.addEventListener('contextmenu', event => {
@@ -145,31 +142,32 @@ export default class WindowBar extends Handler {
     // todo refactor the code here
     getReceiverWindow(x, y, currentBar) {
         const windowBars = document.querySelectorAll(".window-bar:not(.ghost)");
-        windowBars.forEach(windowBar => {
-            if (windowBar !== currentBar) {
-                let wBPosition = windowBar.getBoundingClientRect();
-                if (
-                    Math.abs(x - wBPosition.left) < 10 &&
-                    Math.abs(y - wBPosition.top) < 45
-                ) {
-                    windowBar.classList.add("left-highlight");
-                } else {
-                    windowBar.classList.remove("left-highlight");
-                    windowBar.classList.remove("right-highlight");
-                }
 
-                if (windowBar === windowBar.parentElement.lastElementChild) {
-                    const relativeXPosition = x - wBPosition.left - windowBar.offsetWidth;
-                    if (
-                        x <
-                        windowBar.parentElement.offsetLeft +
-                        windowBar.parentElement.offsetWidth -
-                        10 &&
-                        relativeXPosition >= -10 &&
-                        Math.abs(y - wBPosition.top) < 45
-                    ) {
-                        windowBar.classList.add("right-highlight");
-                    }
+        windowBars.forEach(windowBar => {
+            if (windowBar === currentBar) return;
+
+            const rect = windowBar.getBoundingClientRect();
+            const isVerticalClose = Math.abs(y - rect.top) < 45;
+            const isLeftClose = Math.abs(x - rect.left) < 10;
+
+            // Highlight for left side
+            if (isLeftClose && isVerticalClose) {
+                windowBar.classList.add("left-highlight");
+            } else {
+                windowBar.classList.remove("left-highlight");
+                windowBar.classList.remove("right-highlight");
+            }
+
+            // Highlight for right side if it's the last child
+            const isLastChild = windowBar === windowBar.parentElement.lastElementChild;
+            if (isLastChild) {
+                const parent = windowBar.parentElement;
+                const parentRightEdge = parent.offsetLeft + parent.offsetWidth;
+                const relativeX = x - rect.left - windowBar.offsetWidth;
+                const isRightClose = relativeX >= -10 && x < parentRightEdge - 10;
+
+                if (isRightClose && isVerticalClose) {
+                    windowBar.classList.add("right-highlight");
                 }
             }
         });
