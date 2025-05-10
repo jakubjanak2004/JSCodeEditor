@@ -446,8 +446,6 @@ nav button.selected {
     fill: gray;
 }
 
-/* wifi pulse from top on online */
-
 .wifi-sign .arc:first-of-type {
     transition: stroke .4s ease .4s;
 }
@@ -584,7 +582,6 @@ nav button.selected {
     background: rgba(255, 255, 255, 0.1);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
     pointer-events: all;
     opacity: 1;
 }
@@ -619,14 +616,8 @@ nav button.selected {
     background-color: gray;
 }
 
-@media screen and (min-width: 700px) {
-    #search-button {
-        width: 400px;
-    }
-}
-
-@media screen and (min-width: 1000px) {
-    #search-button {
-        width: 600px;
+@media screen and (max-width: 700px) {
+    #editor-container > nav {
+        width: 45px
     }
 }
