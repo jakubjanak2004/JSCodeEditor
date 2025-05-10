@@ -44,7 +44,7 @@ export function dragAndDropFiles() {
   function processEntry(entry, parentFolder) {
     if (entry.kind === 'file') {
       entry.file(file => {
-        console.log('expected directory:', file);
+        console.error('expected directory:', file);
       });
     } else if (entry.kind === 'directory') {
       console.log('folder given:', entry.name)

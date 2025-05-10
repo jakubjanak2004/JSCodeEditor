@@ -27,8 +27,6 @@ export default class UDHandler extends Handler {
         const resizeDelta =
             getPointerPositionY(e) - this.boxA.offsetTop - this.boxA.offsetHeight;
 
-        console.log(this.boxAMinHeight)
-
         if (this.boxA.offsetHeight + resizeDelta <= this.boxAMinHeight) {
             return;
         }

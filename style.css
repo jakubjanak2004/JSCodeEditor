@@ -279,6 +279,10 @@ nav button.selected {
     background-color: var(--color-7);
 }
 
+.content .file.big {
+    background-color: red;
+}
+
 #left-panel .opened > .content {
     height: 100%;
 }

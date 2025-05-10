@@ -8,6 +8,10 @@ export default class DirectoryFile extends Directory {
     HTMLTextContent;
     filePath = "";
     contentDirty = false;
+    onDblClick;
+    // 1MB is the threshold for file opening
+    maxSizeMB = 1
+    maxSizeOfFile = this.maxSizeMB * 1024 * 1024;
 
     constructor(leftPanel, entry, parentFolder) {
         super(leftPanel, entry, parentFolder);
@@ -16,24 +20,8 @@ export default class DirectoryFile extends Directory {
         this.sectionElement.textContent = this.name;
         this.sectionElement.style.paddingLeft = this.padding;
 
-        this.sectionElement.addEventListener("dblclick", () => {
-            if (this.windowBars.length > 0) {
-                console.error('For now the creation of multiple window Bars for one file is not allowed');
-                return;
-            }
-
-            // load Content on first WindowBar creation
-            if (!this.textContent) {
-                console.log('Loading the text content for', this.name);
-                this.loadTextContent().then(() => {
-                    this.windowBars.push(new WindowBar(this));
-                    this.windowBars[this.windowBars.length - 1].setActive(true);
-                });
-            } else {
-                this.windowBars.push(new WindowBar(this));
-                this.windowBars[this.windowBars.length - 1].setActive(true);
-            }
-        });
+        this.onDblClick = this.handle_dblclick.bind(this);
+        this.sectionElement.addEventListener("dblclick", this.onDblClick);
 
         document.addEventListener('keydown', event => {
             if (event.key === 's' && (event.ctrlKey || event.metaKey)) {
@@ -51,6 +39,25 @@ export default class DirectoryFile extends Directory {
                 FileContextMenu.show(event, this);
             }
         });
+    }
+
+    handle_dblclick() {
+        if (this.windowBars.length > 0) {
+            console.error('For now the creation of multiple window Bars for one file is not allowed');
+            return;
+        }
+
+        // load Content on first WindowBar creation
+        if (!this.textContent) {
+            console.log('Loading the text content for', this.name);
+            this.loadTextContent().then(() => {
+                this.windowBars.push(new WindowBar(this));
+                this.windowBars[this.windowBars.length - 1].setActive(true);
+            });
+        } else {
+            this.windowBars.push(new WindowBar(this));
+            this.windowBars[this.windowBars.length - 1].setActive(true);
+        }
     }
 
     async delete() {
@@ -80,18 +87,27 @@ export default class DirectoryFile extends Directory {
             // Get the File object from the file handle
             const file = await this.entry.getFile();
 
+            if (file.size > this.maxSizeOfFile) {
+                console.error('File size of', this.name, 'is too large');
+                this.sectionElement.removeEventListener('dblclick', this.onDblClick);
+                this.sectionElement.classList.add('big');
+                throw Error(`File size of: ${file.size} is too large`);
+            }
+
             // Read the contents of the file as text
             const text = await file.text();
 
-            console.log('just read text', text);
+            console.log('just red text', text);
             this.updateTextContentOnLoad(text);
         } catch (error) {
             console.error('Error reading file:', error);
             throw error;
         }
 
-        for (const folder of this.parentFolders) {
-            this.filePath += folder.name + " > ";
+        let pFolder = this.parentFolders
+        while (pFolder) {
+            this.filePath = pFolder.name + " > " + this.filePath;
+            pFolder = pFolder.parentFolders;
         }
         this.filePath += this.entry.name;
     }

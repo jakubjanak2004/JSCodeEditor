@@ -5,7 +5,7 @@ export default class Directory {
     parentDirectory;
     sectionElement;
     padding;
-    parentFolders = [];
+    parentFolders
 
     constructor(parentSection, entry, parentFolder) {
         this.entry = entry;
@@ -13,7 +13,7 @@ export default class Directory {
         this.name = entry.name;
         this.parentDirectory = parentSection;
         if (parentFolder) {
-            this.parentFolders.push(parentFolder);
+            this.parentFolders = parentFolder;
         }
 
         this.sectionElement = document.createElement("li");

@@ -75,7 +75,7 @@ export class DirectoryFolder extends Directory {
         for await (const subEntry of this.entry.values()) {
             if (subEntry.kind === "file") {
                 this.childFiles.push(
-                    new DirectoryFile(this.content, subEntry, this.entry)
+                    new DirectoryFile(this.content, subEntry, this)
                 );
             }
             if (subEntry.kind === "directory") {

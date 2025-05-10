@@ -85,7 +85,6 @@ export default class WindowBar extends Handler {
     }
 
     setActive(haveMovedElsewhere=false) {
-        console.log('setting path', this.leftPanelSectionFile.filePath)
         GlobalPath.setPath(this.leftPanelSectionFile.filePath);
         if (haveMovedElsewhere) delete this.windowBar.dataset.selectedCount;
         this.windowBar.parentElement.querySelectorAll('.window-bar')
