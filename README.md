@@ -56,19 +56,25 @@ When files or folders are dragged and dropped into the application, the root fol
 Each folder can be opened by clicking on it to reveal its contents.
 An animation of the collapse sign is shown (rotation 90deg).
 
-![▶ Watch demo video](./assets/dragFolder.gif)
+![▶ Drag and Drop Folder](./assets/dragFolder.gif)
 
 #### Folder
 
 Represented by the `DirectoryFolder` class, a folder can contain zero or more directories
 (either other folders or files).
 
+![▶ Open and Close Folder](./assets/folder.gif)
+
 #### File
 
 Represented by the `DirectoryFile` class, a file contains text content.
-When clicked, its contents are shown in a `EditorRow` within the Editor Content section. And `WindowBar` also appears.  
+When clicked, its contents are shown in a `EditorRow` within the Editor Content section. And `WindowBar` also appears.
+
+![▶ File being opened](./assets/file.gif)
 
 > ⚠️ When the File is bigger than 1MB, it won't open and will be red.
+
+![▶ File cannot being opened](./assets/redFile.gif)
 
 > ⚠️ Currently, only one `WindowBar` per file can be opened at a time. This may be expanded in the future.
 
@@ -83,12 +89,16 @@ This section holds the files that are currently being edited. When empty, the ed
 The editor content is divided into columns that hold the main content. When there are no `Rows` in the Column, and it is 
 not the first one it disappears.
 
+![▶ Columns](./assets/columns.gif)
+
 #### Rows
 
 Each column contains zero or more rows, which can display `WindowBars` and text content.  
 The text is edited in a contenteditable element.
 Each row is its own element, and when selected, it brightens.  
 In each row path to the currently selected `WindowBar` is shown.
+
+![▶ Rows](./assets/rows.gif)
 
 #### Window Bars
 
@@ -97,7 +107,9 @@ In each row path to the currently selected `WindowBar` is shown.
 - **Unselected**, sitting idle.
 - **Dragged** between rows for rearrangement.
 
-Only one `WindowBar` can display content in a row at a time.
+![▶ Window Bars](./assets/windowBars.gif)
+
+> ⚠️ Only one `WindowBar` can display content in a row at a time.
 
 ---
 
