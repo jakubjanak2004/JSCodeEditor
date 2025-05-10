@@ -34,10 +34,15 @@ export function dragAndDropFiles() {
     async function handleFiles(files) {
         for (const item of files) {
             let handle;
+            // todo making this accessible on all browsers
             if ('getAsFileSystemHandle' in item) {
                 handle = await item.getAsFileSystemHandle();
+            } else if ('webkitGetAsEntry' in item) {
+                handle = item.webkitGetAsEntry();
+                alert('Browser does not support FileSystemHandle');
+                return;
             } else {
-                alert("This browser does not support SystemHandle");
+                alert("Haven't been able to load dropped folder");
             }
 
             if (handle) {
@@ -47,11 +52,11 @@ export function dragAndDropFiles() {
     }
 
     function processEntry(entry, parentFolder) {
-        if (entry.kind === 'file') {
+        if (entry.kind === 'file' || entry.isFile) {
             entry.file(file => {
                 console.error('expected directory:', file);
             });
-        } else if (entry.kind === 'directory') {
+        } else if (entry.kind === 'directory' || entry.isDirectory) {
             console.log('folder given:', entry.name)
             new DirectoryFolder(parentFolder, entry);
         }
