@@ -58,7 +58,8 @@ An animation of the collapse sign is shown (rotation 90deg) after clicking on th
 
 ![▶ Drag and Drop Folder](./assets/dragFolder.gif)
 
-> ⚠️ After the `Folder` is drag and dropped onto the page it is loaded using `getAsFileSystemHandle()` which is only available on Chrome, Opera and Edge!!!
+> ⚠️ When a folder is dragged and dropped onto the page, it is loaded using [`getAsFileSystemHandle()`](https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItem/getAsFileSystemHandle), which is only supported in Chrome, Edge, and Opera.  
+> Firefox and Safari only expose [`FileSystemDirectoryEntry`](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryEntry), which is **read-only** and does not support writing to files.
 
 #### Folder
 
