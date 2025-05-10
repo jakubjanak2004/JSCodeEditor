@@ -56,10 +56,7 @@ When files or folders are dragged and dropped into the application, the root fol
 Each folder can be opened by clicking on it to reveal its contents.
 An animation of the collapse sign is shown (rotation 90deg).
 
-<video width="640" height="360" controls>
-  <source src="./assets/dragFolder.mov" type="video/mov">
-  Your browser does not support the video tag.
-</video>
+[▶ Watch demo video](./assets/dragFolder.mov)
 
 #### Folder
 
