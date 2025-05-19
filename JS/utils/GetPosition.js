@@ -1,3 +1,5 @@
+// These are utility functions to get position various events
+//
 // return the X position of the mouse or user finger
 export function getPointerPositionX(e) {
   if (e.touches) {
