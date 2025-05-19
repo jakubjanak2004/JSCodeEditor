@@ -1,9 +1,12 @@
+// abstract context menu class
+// is singleton just the context are changing
 export default class ContextMenu {
     static contextMenu = null;
     static target = null;
     contextMenuElement;
     menuList;
 
+    // initialize the context menu
     static initialize(options = []) {
         // Prevent duplicate initialization
         if (ContextMenu.contextMenu) {
@@ -37,11 +40,13 @@ export default class ContextMenu {
         });
     }
 
+    // set clickable options in the menu list
     setOptions(options) {
         this.menuList.innerHTML = "";
         options.forEach(option => this.menuList.appendChild(option));
     }
 
+    // show the context menu
     show(event, target, optionsPrepend = [], optionsAppend = []) {
         event.preventDefault();
         ContextMenu.initialize(optionsPrepend);
@@ -53,6 +58,7 @@ export default class ContextMenu {
         this.contextMenuElement.classList.remove("hidden");
     }
 
+    // hide the context menu
     hide() {
         this.contextMenuElement.classList.add("hidden");
         ContextMenu.target = undefined;

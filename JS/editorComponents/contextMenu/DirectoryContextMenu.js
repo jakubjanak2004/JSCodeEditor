@@ -1,5 +1,6 @@
 import ContextMenu from "./ContextMenu.js";
 
+// context menu for directory
 export default class DirectoryContextMenu extends ContextMenu {
     static show(event, target, optionsPrepend = [], optionsAppend = []) {
         const optionDelete = document.createElement("li");

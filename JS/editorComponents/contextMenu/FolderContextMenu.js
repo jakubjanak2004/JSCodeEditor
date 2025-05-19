@@ -1,6 +1,7 @@
 import DirectoryContextMenu from "./DirectoryContextMenu.js";
 import ContextMenu from "./ContextMenu.js";
 
+// context menu for folder
 export default class FolderContextMenu extends DirectoryContextMenu {
     static show(event, target, optionsPrepend = [], optionsAppend = []) {
         const option1 = document.createElement("li");

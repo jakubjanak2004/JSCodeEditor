@@ -1,6 +1,7 @@
 import ContextMenu from "./ContextMenu.js";
 import EditorContainer from "../EditorContainer.js";
 
+// context menu for window bar
 export default class WindowBarContextMenu extends ContextMenu {
     static show(event, target, optionPrepend= [], optionsAppend =[]) {
         const option1 = document.createElement("li");
