@@ -1,5 +1,6 @@
 import GlobalPath from "./GlobalPath.js";
 
+// editor row representation
 export default class EditorRow {
     textEditorRow;
     textEditorHeader;
@@ -61,10 +62,10 @@ export default class EditorRow {
         const resizeObserver = new ResizeObserver(this.updateLineNumber.bind(this));
         resizeObserver.observe(this.codeEdit);
 
-        // adding listen to key-pressed function
+        // observing for changes
         const observer = new MutationObserver(mutations => {
             for (const mutation of mutations) {
-                // Handle added nodes
+                // Handle text div added
                 for (const node of mutation.addedNodes) {
                     if (node.nodeType === Node.ELEMENT_NODE) {
                         this.reactOnTextDivAdded(node);
@@ -72,7 +73,7 @@ export default class EditorRow {
                     }
                 }
 
-                // Handle removed nodes
+                // Handle window bar removed
                 for (const node of mutation.removedNodes) {
                     if (node.nodeType === Node.ELEMENT_NODE) {
                         this.reactOnWindowBarRemoved(node);
@@ -83,27 +84,10 @@ export default class EditorRow {
 
         observer.observe(this.codeEdit, {childList: true});
         observer.observe(this.windowManagement, {childList: true});
-
-        // todo not needed for now
-        // this.codeEdit.addEventListener("keydown", event => {
-        //     if (event.key === "Enter") {
-        //         return;
-        //     }
-        //     const textDivs = this.codeEdit.querySelectorAll(".text-div");
-        //     if (
-        //         textDivs.length === 1 &&
-        //         event.key === "Backspace" &&
-        //         !textDivs[0].textContent
-        //     ) {
-        //         event.preventDefault();
-        //         return;
-        //     }
-        //     // event.target.firstElementChild.listenToKeyPressed(event);
-        // });
-
         document.addEventListener("selectionchange", () => this.reactToSelectionChange());
     }
 
+    // react on new window bar being added
     reactOnWindowBarAdded(node) {
         if (!node.classList.contains('window-bar')) {
             return;
@@ -111,6 +95,8 @@ export default class EditorRow {
         this.windowBarCount++;
     }
 
+    // react on window bar being removed
+    // if window bar count is 0 then remove the row
     reactOnWindowBarRemoved(node) {
         if (!node.classList.contains('window-bar')) {
             return;
@@ -133,16 +119,15 @@ export default class EditorRow {
         }
     }
 
+    // add new test div
     reactOnTextDivAdded(node) {
         if (!node.classList.contains('text-div')) {
             return;
         }
-        this.createTextDiv(node);
     }
 
-    // todo entering in the text-div therefore creating new text divs the selection stops being triggered after few presses of the enter
+    // todo comment
     reactToSelectionChange() {
-        // todo seeing the problem here
         console.log('react on selection being changed');
         const selection = window.getSelection();
         if (selection.rangeCount <= 0) return;
@@ -169,22 +154,6 @@ export default class EditorRow {
         lineNumbers[nthLine].classList.add('selected');
     }
 
-    // todo decide if leave or remove
-    createTextDiv(node) {
-        // if (!node.classList.contains('text-div')) return;
-        // // handling new focused text-div
-        // console.log('counting previous elements', this.countPreviousElements(node, 'text-div'), node)
-        // document
-        //     .querySelectorAll(".text-div.focused")
-        //     .forEach(textDiv => textDiv.classList.remove("focused"));
-        // node.classList.add("focused");
-        //
-        // const nthLine = this.countPreviousElements(node, 'text-div');
-        // const lineNumbers = node.parentElement.parentElement.querySelectorAll('.line-number');
-        // document.querySelectorAll('.line-number.selected').forEach(lineNumber => lineNumber.classList.remove('selected'));
-        // lineNumbers[nthLine].classList.add('selected');
-    }
-
     countPreviousElements(element, className) {
         let count = 0;
         let sibling = element.previousElementSibling;
@@ -199,6 +168,7 @@ export default class EditorRow {
         return count;
     }
 
+    // count the number of text lines in the code editor row
     countLines() {
         // Get the height and line height of the contenteditable element
         const lineHeight = parseFloat(
@@ -211,12 +181,14 @@ export default class EditorRow {
         return Math.floor(height / lineHeight);
     }
 
+    // update the number of lines after adding, removing the text div
     updateLineNumber() {
         const numLines = this.countLines();
         let currentLineNumbers = this.lineNumbers.querySelectorAll(
             ".line-numbers-block"
         ).length;
 
+        // adding the line numbers
         while (currentLineNumbers < numLines) {
             this.lineNumbers.innerHTML +=
                 `<div class="line-numbers-block">
@@ -226,13 +198,15 @@ export default class EditorRow {
             currentLineNumbers++;
         }
 
+        // removing excessive line numbers
         while (currentLineNumbers > numLines) {
             this.lineNumbers.removeChild(this.lineNumbers.lastChild);
             currentLineNumbers--;
         }
     }
 
-    addWindow(windowBar) {
+    // add window bar into the editor row
+    addWindowBar(windowBar) {
         this.windowManagement.appendChild(windowBar.windowBar);
         windowBar.editorRow = this.textEditorRow;
     }

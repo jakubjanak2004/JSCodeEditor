@@ -3,6 +3,7 @@ import LRHandler from "./handler/LRHandler.js";
 import EditorRow from "./EditorRow.js";
 import GlobalPath from "./GlobalPath.js";
 
+// editor column class representation
 export default class EditorColumn {
     LRHandler;
     editorColumn;
@@ -22,7 +23,8 @@ export default class EditorColumn {
         this.editorColumn.classList.add("text-editor-column");
         editorContainer.appendChild(this.editorColumn);
 
-        // todo adding the SVG logo
+        // editor logo svg
+        // Note: I haven't created the SVG I have downloaded it from the internet, it is in the documentation
         this.editorColumn.innerHTML += `
             <svg id="editor-logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <mask id="mask0" mask-type="alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">
@@ -69,6 +71,7 @@ export default class EditorColumn {
 
         this.LRHandler = new LRHandler(lrHandler);
 
+        // observe the changes being made
         const observer = new MutationObserver((mutations) => {
             const editorRows = this.editorColumn.querySelectorAll('.text-editor-row');
 
@@ -78,7 +81,7 @@ export default class EditorColumn {
                 observer.disconnect();
                 EditorContainer.removeColumn(this);
             } else {
-                // if row is removed, and it is the last column than erase the Global Path
+                // if the row is removed, and it is the last column than erase the Global Path, to clear it
                 mutations.forEach((mutation) => {
                     mutation.removedNodes.forEach((node) => {
                         if (node instanceof HTMLElement && node.classList.contains('text-editor-row')) {
@@ -88,6 +91,7 @@ export default class EditorColumn {
                 });
             }
 
+            // set rows after removing it
             mutations.forEach(mutation => {
                 if (mutation.removedNodes.length) {
                     mutation.removedNodes.forEach((removedNode) => {
@@ -105,11 +109,12 @@ export default class EditorColumn {
         });
     }
 
-    addWindow(windowBar) {
+    // add new window bar into the editor column
+    addWindowBar(windowBar) {
         if (this.editorRows.length === 0) {
             this.editorRows.push(new EditorRow(this.editorColumn));
         }
-        this.editorRows[0].addWindow(windowBar);
+        this.editorRows[0].addWindowBar(windowBar);
         windowBar.editorRow = this.editorRows[0].textEditorRow;
         return this.editorRows[0];
     }

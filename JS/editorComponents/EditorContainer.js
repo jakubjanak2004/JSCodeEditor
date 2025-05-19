@@ -2,6 +2,8 @@ import EditorColumn from "./EditorColumn.js";
 import EditorRow from "./EditorRow.js";
 import UDHandler from "./handler/UDHandler.js";
 
+// editor container representation
+// is singleton, static
 export default class EditorContainer {
     static editorContainer = document.getElementById("editor-container");
     static editorColumns = [];
@@ -14,18 +16,20 @@ export default class EditorContainer {
         if (this.editorColumns.length === 0) {
             this.editorColumns.push(new EditorColumn(this.editorContainer));
         }
-        return this.editorColumns[0].addWindow(windowBar);
+        return this.editorColumns[0].addWindowBar(windowBar);
     }
 
+    // split the window bar right
     static splitRight(windowBar) {
         let newEditorColumn = new EditorColumn(this.editorContainer);
 
         this.editorColumns.push(newEditorColumn);
         windowBar.editorRow.querySelector('.window-management').removeChild(windowBar.windowBar);
-        newEditorColumn.addWindow(windowBar);
+        newEditorColumn.addWindowBar(windowBar);
         windowBar.setActive(true);
     }
 
+    // split the window bar down
     static splitDown(windowBar) {
         const editorColumn = windowBar.windowBar.closest('.text-editor-column');
 
@@ -39,7 +43,7 @@ export default class EditorContainer {
 
         let newEditorRow = new EditorRow(editorColumn);
         windowBar.editorRow.querySelector('.window-management').removeChild(windowBar.windowBar);
-        newEditorRow.addWindow(windowBar);
+        newEditorRow.addWindowBar(windowBar);
         windowBar.setActive(true);
 
         newEditorRow.UDHandler = new UDHandler(udHandler);
