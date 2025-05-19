@@ -1,5 +1,6 @@
 import {DirectoryFolder} from "./directory/DirectoryFolder.js";
 
+// function to handle drag and drop events
 export function dragAndDropFiles() {
     const dropZone = document.querySelector(".drag-and-drop-panel");
     const fileList = document.getElementById("left-panel");
@@ -10,6 +11,7 @@ export function dragAndDropFiles() {
         document.body.addEventListener(event, (e) => e.preventDefault());
     });
 
+    // make drop zone active
     document.addEventListener("dragenter", () => {
         dropZone.classList.add("active");
     });
@@ -31,27 +33,28 @@ export function dragAndDropFiles() {
     });
 
     // add files to a filesystem
+    // if browser does not support system handler user is alerted
     async function handleFiles(files) {
         for (const item of files) {
             let handle;
-            // todo making this accessible on all browsers
             if ('getAsFileSystemHandle' in item) {
                 handle = await item.getAsFileSystemHandle();
             } else if ('webkitGetAsEntry' in item) {
-                handle = item.webkitGetAsEntry();
                 alert('Browser does not support FileSystemHandle');
                 return;
             } else {
                 alert("Haven't been able to load dropped folder");
+                return;
             }
 
             if (handle) {
-                processEntry(handle, fileList);
+                processHandle(handle, fileList);
             }
         }
     }
 
-    function processEntry(entry, parentFolder) {
+    // process the given System Handle
+    function processHandle(entry, parentFolder) {
         if (entry.kind === 'file' || entry.isFile) {
             entry.file(file => {
                 console.error('expected directory:', file);

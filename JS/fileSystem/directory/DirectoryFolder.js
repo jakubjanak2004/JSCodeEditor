@@ -2,6 +2,7 @@ import Directory from "./Directory.js";
 import DirectoryFile from "./DirectoryFile.js";
 import FolderContextMenu from "../../editorComponents/contextMenu/FolderContextMenu.js";
 
+// folder representation
 export class DirectoryFolder extends Directory {
     collapseButton;
     content;
@@ -23,18 +24,21 @@ export class DirectoryFolder extends Directory {
         this.sectionElement.appendChild(this.collapseButton);
         this.sectionElement.appendChild(this.content);
 
+        // load subdirectories on first click
         this.collapseButton.addEventListener("click", () => {
             // subDirectories are lazy-loaded when the user opens the Folder
-            this.loadSubFiles().then(() => {
+            this.loadSubDirectories().then(() => {
                 console.log('sub files loaded for', this.entry.name)
             });
         }, {once: true});
 
+        // open the directory in the sidebar
         this.collapseButton.addEventListener("click", () => {
             this.sectionElement.classList.toggle("opened");
             this.collapseButton.firstChild.classList.toggle("pressed");
         });
 
+        // handle contextmenu
         document.addEventListener('contextmenu', event => {
             if (event.target === this.collapseButton) {
                 FolderContextMenu.show(event, this);
@@ -42,6 +46,7 @@ export class DirectoryFolder extends Directory {
         });
     }
 
+    // delete this folder
     async delete() {
         this.collapseButton.remove();
         this.content.remove();
@@ -57,6 +62,7 @@ export class DirectoryFolder extends Directory {
         await this.entry.remove();
     }
 
+    // create a new file in the folder
     async createNewFile(fileName) {
         const newFileEntry = await this.entry.getFileHandle(fileName, {create: true});
         this.childFiles.push(
@@ -64,6 +70,7 @@ export class DirectoryFolder extends Directory {
         );
     }
 
+    // create a new folder in this folder
     async createNewFolder(fileName) {
         const newFolderEntry = await this.entry.getDirectoryHandle(fileName, {create: true});
         this.childFolders.push(
@@ -71,7 +78,8 @@ export class DirectoryFolder extends Directory {
         );
     }
 
-    async loadSubFiles() {
+    // load all sub directories
+    async loadSubDirectories() {
         for await (const subEntry of this.entry.values()) {
             if (subEntry.kind === "file") {
                 this.childFiles.push(

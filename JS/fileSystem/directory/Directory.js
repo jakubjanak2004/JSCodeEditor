@@ -1,3 +1,6 @@
+// representing the directory, holding the handles
+// File and Directory
+//  extend abstract class representing the directory
 export default class Directory {
     static PADDING_SIZE = 25;
     entry;
@@ -9,7 +12,6 @@ export default class Directory {
 
     constructor(parentSection, entry, parentFolder) {
         this.entry = entry;
-        // this.name = handleNaming(entry.name, 20);
         this.name = entry.name;
         this.parentDirectory = parentSection;
         if (parentFolder) {
@@ -26,7 +28,6 @@ export default class Directory {
 
         // Calculate the depth of nesting
         while (parent) {
-        // todo just take the padding of the parent element
             if (
                 parent.tagName.toLowerCase() === "ul" &&
                 parent.classList.contains("content")
