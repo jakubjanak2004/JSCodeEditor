@@ -1,13 +1,23 @@
+/* =========================================================================================== */
+/* =========================================================================================== */
+/* =========================================================================================== */
+/* ==========================     G E N E R A L   S T Y L I N G     ========================== */
+/* =========================================================================================== */
+/* =========================================================================================== */
+/* =========================================================================================== */
+
+/* Importing the fonts */
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap');
 
+/* normalize the css */
 * {
     margin: 0;
     box-sizing: border-box;
     font-family: 'JetBrains Mono', monospace;
-}
 
-*:not(ul) {
-    padding: 0;
+    &:not(ul) {
+        padding: 0;
+    }
 }
 
 :root {
@@ -23,8 +33,8 @@
     --color-4: rgb(170, 170, 170);
     --color-5: rgb(55, 55, 55);
     --color-6: rgb(76, 76, 76);
-
     --color-7: rgb(50, 50, 50);
+
     --editor-blue: rgb(50, 108, 192);
     --gray-text-color: rgb(140, 140, 140);
 
@@ -36,7 +46,78 @@ body {
     font-size: 12px;
     color: var(--default-text-color);
     overflow: hidden;
+
+    > header,
+    > footer {
+        display: flex;
+        align-items: center;
+    }
+
+    > header {
+        height: var(--header-height);
+        justify-content: center;
+    }
 }
+
+.main-header {
+    background-color: var(--color-1);
+}
+
+footer {
+    height: var(--footer-height);
+    background-color: var(--editor-blue);
+    color: white;
+    padding: 0 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#editor-container {
+    display: flex;
+    height: calc(100vh - var(--footer-height) - var(--header-height));
+    width: 100%;
+    min-width: 0;
+
+    > * {
+        height: 100%;
+        font-size: 12px;
+        outline: none;
+    }
+
+    > nav {
+        width: 50px;
+        background-color: var(--color-1);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        button {
+            display: block;
+            width: 100%;
+            background: none;
+            border: none;
+            color: var(--gray-text-color);
+            height: 50px;
+
+            &:hover {
+                color: white;
+                cursor: pointer;
+            }
+
+            &.selected {
+                border-left: 1px solid white;
+                color: white;
+            }
+        }
+    }
+}
+
+/* ############################################################################################## */
+/* ##                                                                                          ## */
+/* ##                         S C R O L L B A R   S T Y L I N G                                ## */
+/* ##                                                                                          ## */
+/* ############################################################################################## */
 
 ::-webkit-scrollbar {
     width: 12px;
@@ -62,73 +143,11 @@ body {
     background: none;
 }
 
-body > header,
-body > footer {
-    display: flex;
-    align-items: center;
-}
-
-body > header {
-    height: var(--header-height);
-    justify-content: center;
-}
-
-.main-header {
-    background-color: var(--color-1);
-}
-
-#search-button {
-    cursor: pointer;
-    text-align: center;
-    background-color: var(--color-5);
-    border: 1px solid var(--color-6);
-    border-radius: 5px;
-    width: 250px;
-    height: 23px;
-    font-size: inherit;
-    color: white;
-}
-
-.arrow-button {
-    width: 25px;
-    height: 25px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: none;
-    border: none;
-    border-radius: 5px;
-    margin: 0 5px;
-    color: var(--color-6);
-    font-weight: 100;
-    font-size: 20px;
-}
-
-.arrow-button.clickable {
-    color: var(--gray-text-color);
-    cursor: pointer;
-}
-
-.arrow-button.clickable:hover {
-    background-color: var(--color-5);
-}
-
-footer {
-    height: var(--footer-height);
-    background-color: var(--editor-blue);
-    color: white;
-    padding: 0 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-#editor-container {
-    display: flex;
-    height: calc(100vh - var(--footer-height) - var(--header-height));
-    width: 100%;
-    min-width: 0;
-}
+/* ############################################################################################## */
+/* ##                                                                                          ## */
+/* ##                           H A N D L E R   S T Y L I N G                                  ## */
+/* ##                                                                                          ## */
+/* ############################################################################################## */
 
 .lr-handler {
     position: relative;
@@ -137,6 +156,20 @@ footer {
     cursor: ew-resize;
     flex: 0 0 auto;
     background-color: rgba(0, 0, 0, 0);
+
+    &:not(:first-of-type) {
+        width: 3px;
+        background-color: var(--color-1);
+    }
+
+    &.selected .highlight,
+    &:hover .highlight {
+        top: 0;
+        left: 0;
+        width: 5px;
+        height: 100%;
+        background: var(--editor-blue);
+    }
 }
 
 .ud-handler {
@@ -147,67 +180,26 @@ footer {
     cursor: ns-resize;
     flex: 0 0 auto;
     background-color: var(--color-3);
-}
 
-.lr-handler:not(:first-of-type) {
-    width: 3px;
-    background-color: var(--color-1);
+    &.selected .highlight,
+    &:hover .highlight {
+        top: 0;
+        left: 0;
+        height: 5px;
+        width: 100%;
+        background-color: var(--editor-blue);
+    }
 }
 
 .highlight {
     pointer-events: none;
 }
 
-.lr-handler.selected .highlight,
-.lr-handler:hover .highlight {
-    top: 0;
-    left: 0;
-    width: 5px;
-    height: 100%;
-    background: var(--editor-blue);
-}
-
-.ud-handler.selected .highlight,
-.ud-handler:hover .highlight {
-    top: 0;
-    left: 0;
-    height: 5px;
-    width: 100%;
-    background-color: var(--editor-blue);
-}
-
-#editor-container > * {
-    height: 100%;
-    font-size: 12px;
-    outline: none;
-}
-
-#editor-container > nav {
-    width: 50px;
-    background-color: var(--color-1);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-nav button {
-    display: block;
-    width: 100%;
-    background: none;
-    border: none;
-    color: var(--gray-text-color);
-    height: 50px;
-}
-
-nav button:hover {
-    color: white;
-    cursor: pointer;
-}
-
-nav button.selected {
-    border-left: 1px solid white;
-    color: white;
-}
+/* ############################################################################################## */
+/* ##                                                                                          ## */
+/* ##                         L E F T   P A N E L   S T Y L I N G                              ## */
+/* ##                                                                                          ## */
+/* ############################################################################################## */
 
 #left-panel {
     flex: 0 1 auto;
@@ -217,78 +209,86 @@ nav button.selected {
     min-width: 0;
     overflow: hidden;
     background-color: var(--color-2);
-}
 
-#left-panel h3 {
-    padding: 10px 20px;
-    font-size: inherit;
-    color: inherit;
-    font-weight: 100;
-}
+    h3 {
+        padding: 10px 20px;
+        font-size: inherit;
+        color: inherit;
+        font-weight: 100;
+    }
 
-#left-panel li {
-    list-style-type: none;
-}
+    li {
+        list-style-type: none;
+    }
 
-#left-panel > li:not([id="main"]) {
-    background-color: var(--color-7);
-}
+    > li:not([id="main"]) {
+        background-color: var(--color-7);
+    }
 
-#left-panel section > span {
-    padding: 5px 0;
-}
+    section > span {
+        padding: 5px 0;
+    }
 
-#left-panel .content {
-    display: block;
-    padding: 0;
-    height: 0;
-    font-size: 10px;
-    background-color: var(--color-2);
-    overflow: hidden;
-}
+    .opened > .content {
+        height: 100%;
+    }
 
-.content ul {
-    width: 100%;
-    list-style-position: inside;
-    list-style-type: none;
-    padding: 0;
-}
+    .content {
+        display: block;
+        padding: 0;
+        height: 0;
+        font-size: 10px;
+        background-color: var(--color-2);
+        overflow: hidden;
 
-.content .file,
-.content .folder {
-    padding: 5px 0;
-    user-select: none;
-}
+        ul {
+            width: 100%;
+            list-style-position: inside;
+            list-style-type: none;
+            padding: 0;
+        }
 
-.folder span{
-    pointer-events: none;
-    user-select: none;
-}
+        .file,
+        .folder {
+            padding: 5px 0;
+            user-select: none;
+            cursor: pointer;
 
-.file, .folder {
-    cursor: pointer;
-}
+            &:hover {
+                background-color: var(--color-7);
+            }
+        }
 
-.folder {
-    width: 100%;
-    display: inline-block;
-}
+        .file {
+            &.big {
+                background-color: red;
+            }
+        }
 
-.content .file:hover,
-.content .folder:hover {
-    background-color: var(--color-7);
-}
+        .folder {
+            width: 100%;
+            display: inline-block;
 
-.content .file.big {
-    background-color: red;
-}
+            span {
+                pointer-events: none;
+                user-select: none;
+            }
+        }
 
-#left-panel .opened > .content {
-    height: 100%;
-}
+        section {
+            &.opened {
+                height: 100%;
+            }
 
-#left-panel section > * {
-    display: inline-block;
+            > * {
+                display: inline-block;
+            }
+        }
+
+        .pressed {
+            transform: rotate(90deg);
+        }
+    }
 }
 
 .collapse-sign {
@@ -318,13 +318,11 @@ nav button.selected {
     overflow: hidden;
 }
 
-#left-panel section.opened {
-    height: 100%;
-}
-
-#left-panel .pressed {
-    transform: rotate(90deg);
-}
+/* ############################################################################################## */
+/* ##                                                                                          ## */
+/* ##                        T E X T   E D I T O R   S T Y L I N G                             ## */
+/* ##                                                                                          ## */
+/* ############################################################################################## */
 
 .text-editor-column {
     position: relative;
@@ -350,11 +348,11 @@ nav button.selected {
     max-width: 250px;
     max-height: 250px;
     z-index: 1;
-}
 
-#editor-logo * {
-    fill: rgb(21, 21, 21);
-    stroke: rgb(21, 21, 21);
+    * {
+        fill: rgb(21, 21, 21);
+        stroke: rgb(21, 21, 21);
+    }
 }
 
 .text-editor-row {
@@ -380,116 +378,6 @@ nav button.selected {
 .window-management {
     flex-grow: 1;
     display: flex;
-}
-
-.window-bar {
-    z-index: 20;
-    user-select: none;
-    display: flex;
-    justify-content: space-between;
-    padding-left: 10px;
-    align-items: center;
-    cursor: pointer;
-    background-color: var(--color-2);
-    height: 40px;
-    width: 100px;
-    position: relative;
-}
-
-.window-bar p {
-    text-overflow: ellipsis;
-    pointer-events: none;
-}
-
-.window-bar button {
-    width: 30px;
-    flex-shrink: 0;
-    background: none;
-    border: none;
-    color: inherit;
-}
-
-.window-bar:not(.selected) button {
-    visibility: hidden;
-}
-
-.window-bar.left-highlight::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 1px;
-    height: 100%;
-    background-color: white;
-}
-
-.window-bar.right-highlight::before {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 1px;
-    height: 100%;
-    background-color: white;
-}
-
-.wifi-sign {
-    width: 25px;
-    height: 25px;
-}
-
-.wifi-sign.offline .arc {
-    stroke: gray;
-}
-
-.wifi-sign.offline .triangle {
-    fill: gray;
-}
-
-.wifi-sign .arc:first-of-type {
-    transition: stroke .4s ease .4s;
-}
-
-.wifi-sign .arc:nth-of-type(2) {
-    transition: stroke .4s ease .2s;
-}
-
-.wifi-sign .triangle {
-    transition: fill .4s ease;
-}
-
-/* wifi pulse from bottom on offline */
-
-.wifi-sign.offline .arc:first-of-type {
-    transition: stroke .4s ease;
-}
-
-.wifi-sign.offline .arc:nth-of-type(2) {
-    transition: stroke .4s ease .2s;
-}
-
-.wifi-sign.offline .triangle {
-    transition: fill .4s ease .4s;
-}
-
-.window-bar.ghost {
-    position: absolute;
-    padding-right: 10px;
-    justify-content: center;
-}
-
-.window-bar.ghost button {
-    display: none;
-}
-
-.window-bar.selected {
-    background-color: var(--color-3);
-}
-
-.path {
-    padding: 3px 10px;
-    color: var(--gray-text-color);
-    background-color: var(--color-3);
 }
 
 .text-editor-content {
@@ -518,10 +406,10 @@ nav button.selected {
     justify-content: center;
     align-items: center;
     color: var(--gray-text-color);
-}
 
-.line-number.selected {
-    color: white;
+    &.selected {
+        color: white;
+    }
 }
 
 .highlighter {
@@ -538,11 +426,11 @@ nav button.selected {
     word-wrap: break-word;
     word-break: break-all;
     outline: none;
-}
 
-.code-edit > * {
-    box-sizing: border-box;
-    height: var(--line-height);
+    > * {
+        box-sizing: border-box;
+        height: var(--line-height);
+    }
 }
 
 .text-div {
@@ -552,11 +440,136 @@ nav button.selected {
     border-left: 2px solid rgba(0, 0, 0, 0);
     display: flex;
     align-items: center;
+
+    &.focused {
+        background-color: rgb(36, 36, 36);
+    }
 }
 
-.text-div.focused {
-    background-color: rgb(36, 36, 36);
+/* ############################################################################################## */
+/* ##                                                                                          ## */
+/* ##                        W I N D O W   B A R   S T Y L I N G                               ## */
+/* ##                                                                                          ## */
+/* ############################################################################################## */
+
+.window-bar {
+    z-index: 20;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;
+    padding-left: 10px;
+    align-items: center;
+    cursor: pointer;
+    background-color: var(--color-2);
+    height: 40px;
+    width: 100px;
+    position: relative;
+
+    &.ghost {
+        position: absolute;
+        padding-right: 10px;
+        justify-content: center;
+
+        button {
+            display: none;
+        }
+    }
+
+    &.selected {
+        background-color: var(--color-3);
+    }
+
+    p {
+        text-overflow: ellipsis;
+        pointer-events: none;
+    }
+
+    button {
+        width: 30px;
+        flex-shrink: 0;
+        background: none;
+        border: none;
+        color: inherit;
+    }
+
+    &:not(.selected) button {
+        visibility: hidden;
+    }
+
+    &.left-highlight::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1px;
+        height: 100%;
+        background-color: white;
+    }
+
+    &.right-highlight::before {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 1px;
+        height: 100%;
+        background-color: white;
+    }
 }
+
+/* ############################################################################################## */
+/* ##                                                                                          ## */
+/* ##                            F O O T E R   S T Y L I N G                                   ## */
+/* ##                                                                                          ## */
+/* ############################################################################################## */
+
+.wifi-sign {
+    width: 25px;
+    height: 25px;
+
+    .arc:first-of-type {
+        transition: stroke 0.4s ease 0.4s;
+    }
+
+    .arc:nth-of-type(2) {
+        transition: stroke 0.4s ease 0.2s;
+    }
+
+    .triangle {
+        transition: fill 0.4s ease;
+    }
+
+    &.offline {
+        .arc {
+            stroke: gray;
+
+            &:first-of-type {
+                transition: stroke 0.4s ease;
+            }
+
+            &:nth-of-type(2) {
+                transition: stroke 0.4s ease 0.2s;
+            }
+        }
+
+        .triangle {
+            fill: gray;
+            transition: fill 0.4s ease 0.4s;
+        }
+    }
+}
+
+.path {
+    padding: 3px 10px;
+    color: var(--gray-text-color);
+    background-color: var(--color-3);
+}
+
+/* ############################################################################################## */
+/* ##                                                                                          ## */
+/* ##                        D R A G   &   D R O P   S T Y L I N G                             ## */
+/* ##                                                                                          ## */
+/* ############################################################################################## */
 
 .drag-and-drop-panel {
     position: absolute;
@@ -572,48 +585,54 @@ nav button.selected {
 
     pointer-events: none;
     opacity: 0;
+
+    h1 {
+        font-size: 50px;
+    }
+
+    &.active {
+        background: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(4px);
+        pointer-events: all;
+        opacity: 1;
+    }
 }
 
-.drag-and-drop-panel h1 {
-    font-size: 50px;
-}
-
-.drag-and-drop-panel.active {
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(4px);
-    pointer-events: all;
-    opacity: 1;
-}
+/* ############################################################################################## */
+/* ##                                                                                          ## */
+/* ##                      C O N T E X T   M E N U   S T Y L I N G                             ## */
+/* ##                                                                                          ## */
+/* ############################################################################################## */
 
 .context-menu {
     z-index: 10;
     position: absolute;
     background-color: var(--color-3);
     border: 1px solid rgb(200, 200, 200);
-}
 
-.context-menu.hidden {
-    display: none;
-}
+    &.hidden {
+        display: none;
+    }
 
-.context-menu ul {
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    list-style-type: none;
-}
+    ul {
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        list-style-type: none;
 
-.context-menu ul li {
-    padding: 5px 10px;
-    width: 100px;
-    cursor: pointer;
-}
+        li {
+            padding: 5px 10px;
+            width: 100px;
+            cursor: pointer;
 
-.context-menu ul li:hover {
-    background-color: gray;
+            &:hover {
+                background-color: gray;
+            }
+        }
+    }
 }
 
 @media screen and (max-width: 700px) {
