@@ -1,6 +1,8 @@
 import {getPointerPositionX} from "../../utils/GetPosition.js";
 import Handler from "./Handler.js";
 
+// resize the boxes on the x-axis
+// changing their width
 export default class LRHandler extends Handler {
     constructor(handler) {
         super(handler);
@@ -13,7 +15,7 @@ export default class LRHandler extends Handler {
         this.boxB.style.width = `${this.boxB.offsetWidth}px`;
     }
 
-    startResizing(e) {
+    startInteraction(e) {
         e.preventDefault();
         if (e.target !== this.handler) return;
         this.isHandlerDragging = true;
@@ -22,8 +24,8 @@ export default class LRHandler extends Handler {
 
     }
 
-    moveResizing(e) {
-        super.moveResizing(e);
+    handleInteraction(e) {
+        super.handleInteraction(e);
 
         if (!this.isHandlerDragging) return;
 

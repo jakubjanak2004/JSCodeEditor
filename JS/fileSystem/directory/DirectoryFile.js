@@ -116,7 +116,7 @@ export default class DirectoryFile extends Directory {
         this.textContent = newContent;
         this.HTMLTextContent = this.parseContent(newContent);
         this.windowBars.forEach(windowBar => {
-            windowBar.updateContent();
+            windowBar.setActive();
         });
     }
 
@@ -127,7 +127,7 @@ export default class DirectoryFile extends Directory {
         // notify the windows about the content being changed
         this.windowBars.forEach(windowBar => {
             if (windowBar !== updatingWindowBar) {
-                windowBar.updateContent();
+                windowBar.setActive();
             }
         });
     }

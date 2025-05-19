@@ -4,6 +4,8 @@ import WindowBarContextMenu from "../contextMenu/WindowBarContextMenu.js";
 import Handler from "./Handler.js";
 import GlobalPath from "../GlobalPath.js";
 
+// movable window handler
+// enables to select and change selected folder
 export default class WindowBar extends Handler {
     leftPanelSectionFile;
     windowBar;
@@ -18,27 +20,31 @@ export default class WindowBar extends Handler {
         this.windowBar = document.createElement("div");
         this.windowBar.classList.add("window-bar");
         this.windowBar.innerHTML = `<p class="text-truncate">${this.leftPanelSectionFile.name}</p>`;
-        const windowBarButton = document.createElement("button");
-        // instead of x add svg
-        windowBarButton.textContent = "x";
-        this.windowBar.appendChild(windowBarButton);
+        const closeButton = document.createElement("button");
+        closeButton.textContent = "x";
+        this.windowBar.appendChild(closeButton);
         this.editorRow = EditorContainer.addNewWindowBar(this).textEditorRow;
 
         // todo bugs the ghost visible as double click performed
+        // setting the windowBar active
         this.windowBar.addEventListener("mousedown", () => {
             this.setActive();
         });
 
-        windowBarButton.addEventListener("mousedown", e => {
+        // close button pressed, closing the window bar
+        closeButton.addEventListener("mousedown", e => {
             this.windowBar.remove();
             this.leftPanelSectionFile.removeWindowBar(this);
             e.stopPropagation();
         });
 
+        // open the contextmenu
         this.windowBar.addEventListener('contextmenu', event => {
             WindowBarContextMenu.show(event, this);
         });
 
+        // observe data-selected-count changing
+        // handle setting the selected windowBar
         const observer = new MutationObserver(mutationsList => {
             for (const mutation of mutationsList) {
                 if (mutation.type === 'attributes' && mutation.attributeName === 'data-selected-count') {
@@ -48,8 +54,7 @@ export default class WindowBar extends Handler {
         });
 
         observer.observe(this.windowBar, {
-            attributes: true,
-            attributeFilter: ['data-selected-count'],
+            attributes: true, attributeFilter: ['data-selected-count'],
         });
 
         // dragging and receiving logic
@@ -58,33 +63,29 @@ export default class WindowBar extends Handler {
         this.windowBarGhost.classList.add("ghost");
         this.windowBarGhost.innerHTML = this.windowBar.innerHTML;
 
-        this.windowBar.addEventListener("mousedown", e => this.startResizing(e));
-        this.windowBar.addEventListener(
-            "touchstart",
-            this.startResizing.bind(this)
-        );
+        // start the interaction on mouse down event
+        this.windowBar.addEventListener("mousedown", e => this.startInteraction(e));
     }
 
+    // handle the data selected count changing
     handleDataSelectedCount() {
         const newValue = this.windowBar.dataset.selectedCount;
         if (newValue === "1") {
             // if selection-count is 1 and this.windowBar is not selected
             if (!this.windowBar.classList.contains('selected')) {
+                // select the window bar
                 this.setHTMLForSelected();
             }
         }
     }
 
+    // remove window bar
     remove() {
         this.windowBar.remove();
     }
 
-    updateContent() {
-        // todo determine if should true be passed into the argument
-        this.setActive();
-    }
-
-    setActive(haveMovedElsewhere=false) {
+    // setting the window bar active
+    setActive(haveMovedElsewhere = false) {
         GlobalPath.setPath(this.leftPanelSectionFile.filePath);
         if (haveMovedElsewhere) delete this.windowBar.dataset.selectedCount;
         this.windowBar.parentElement.querySelectorAll('.window-bar')
@@ -93,12 +94,15 @@ export default class WindowBar extends Handler {
         this.setHTMLForSelected();
     }
 
+    // set HTML for newly selected window bar
     setHTMLForSelected() {
         this.windowBar.classList.add('selected');
         GlobalPath.setPath(this.leftPanelSectionFile.filePath);
         this.editorRow.querySelector('.path').textContent = this.leftPanelSectionFile.filePath;
         const codeEdit = this.editorRow.querySelector('.code-edit');
         codeEdit.innerHTML = this.leftPanelSectionFile.HTMLTextContent;
+        // setting the content of the file object after key being pressed
+        // in the code edit element
         codeEdit.onkeyup = () => {
             let content = "";
             const textDivs = codeEdit.querySelectorAll('.text-div');
@@ -113,12 +117,13 @@ export default class WindowBar extends Handler {
         }
     }
 
-    // todo debug
+    // set the window bar as selected
     setSelected() {
         let wasSelection;
         if (this.windowBar.dataset.selectedCount) {
             wasSelection = parseInt(this.windowBar.dataset.selectedCount);
         }
+        // shift the data selected count
         this.windowBar.dataset.selectedCount = '0';
         this.editorRow.querySelectorAll('.window-bar').forEach(windowBar => {
             let selectedCountInt = parseInt(windowBar.dataset.selectedCount);
@@ -128,27 +133,23 @@ export default class WindowBar extends Handler {
         })
     }
 
-    startResizing(e) {
+    startInteraction(e) {
         if (e.target !== this.windowBar) return;
         this.isBarDragged = true;
         document.body.style.cursor = "pointer";
     }
 
-    moveResizing(e) {
-        // todo maybe isBarDragged can be moved to the super overridden method
+    handleInteraction(e) {
         if (!this.isBarDragged) return;
         if (!this.windowBarGhost.isConnected) {
             document.body.appendChild(this.windowBarGhost);
         }
         this.windowBarGhost.style.left = `${getPointerPositionX(e)}px`;
         this.windowBarGhost.style.top = `${getPointerPositionY(e)}px`;
-        this.getReceiverWindow(
-            getPointerPositionX(e),
-            getPointerPositionY(e),
-            this.windowBar
-        );
+        this.getReceiverWindow(getPointerPositionX(e), getPointerPositionY(e), this.windowBar);
     }
 
+    // if is there is a window next to which current window bar should be moved, find it
     getReceiverWindow(x, y, currentBar) {
         const windowBars = document.querySelectorAll(".window-bar:not(.ghost)");
 
@@ -182,7 +183,8 @@ export default class WindowBar extends Handler {
         });
     }
 
-    stopResizing(e) {
+    // if is some different window bar highlighted, then move the current window bar there
+    stopInteraction(e) {
         if (!this.isBarDragged) return;
         this.isBarDragged = false;
         document.body.removeChild(this.windowBarGhost);

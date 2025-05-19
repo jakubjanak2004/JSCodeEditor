@@ -1,6 +1,8 @@
 import {getPointerPositionY} from "../../utils/GetPosition.js";
 import Handler from "./Handler.js";
 
+// resize the boxes on the y-axis
+// changing their height
 export default class UDHandler extends Handler {
     constructor(handler) {
         super(handler);
@@ -10,7 +12,7 @@ export default class UDHandler extends Handler {
         this.boxB = this.handler.nextElementSibling;
     }
 
-    startResizing(e) {
+    startInteraction(e) {
         e.preventDefault();
         if (e.target === this.handler) {
             this.isHandlerDragging = true;
@@ -19,8 +21,8 @@ export default class UDHandler extends Handler {
         }
     }
 
-    moveResizing(e) {
-        super.moveResizing(e);
+    handleInteraction(e) {
+        super.handleInteraction(e);
 
         if (!this.isHandlerDragging) return;
 

@@ -1,3 +1,4 @@
+// handler class
 export default class Handler {
     handler;
     boxA;
@@ -7,25 +8,25 @@ export default class Handler {
     constructor(handler) {
         this.handler = handler;
 
-        this.handler.addEventListener("mousedown", e => this.startResizing(e));
-        this.handler.addEventListener("touchstart", e => this.startResizing(e));
+        this.handler.addEventListener("mousedown", e => this.startInteraction(e));
+        this.handler.addEventListener("touchstart", e => this.startInteraction(e));
 
-        document.addEventListener("mousemove", e => this.moveResizing(e), {
+        document.addEventListener("mousemove", e => this.handleInteraction(e), {
             passive: false,
         });
-        document.addEventListener("touchmove", e => this.moveResizing(e), {
+        document.addEventListener("touchmove", e => this.handleInteraction(e), {
             passive: false,
         });
 
-        document.addEventListener("mouseup", e => this.stopResizing(e));
-        document.addEventListener("touchend", e => this.stopResizing(e));
+        document.addEventListener("mouseup", e => this.stopInteraction(e));
+        document.addEventListener("touchend", e => this.stopInteraction(e));
 
         // set mutation observer to an boxA
-        // if removed, widen the boxB
+        // handling the removal of boxA/B
         const observer = new MutationObserver(mutations => {
             mutations.forEach((mutation) => {
                 if (mutation.removedNodes.length) {
-                    mutation.removedNodes.forEach((removedNode) => {
+                    mutation.removedNodes.forEach(removedNode => {
                         this.handleRemovedBox(removedNode);
                     });
                 }
@@ -38,6 +39,7 @@ export default class Handler {
         });
     }
 
+    // handle removed boxA/B
     handleRemovedBox(removedNode) {
         // handle boxA removed
         if (removedNode === this.boxA) {
@@ -55,10 +57,12 @@ export default class Handler {
         }
     }
 
-    startResizing(e) {
+    // start the interaction process
+    startInteraction(e) {
     }
 
-    stopResizing(e) {
+    // stop the interaction process
+    stopInteraction(e) {
         if (this.isHandlerDragging) {
             this.isHandlerDragging = false;
             this.handler.classList.remove("selected");
@@ -66,10 +70,8 @@ export default class Handler {
         }
     }
 
-    moveResizing(e) {
+    // handle an interaction process
+    handleInteraction(e) {
         e.preventDefault();
     }
-}
-
-export class boxMinHeight {
 }
