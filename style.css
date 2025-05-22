@@ -233,6 +233,16 @@ footer {
         height: 100%;
     }
 
+    .folder {
+        width: 100%;
+        display: inline-block;
+
+        span {
+            pointer-events: none;
+            user-select: none;
+        }
+    }
+
     .content {
         display: block;
         padding: 0;
@@ -265,16 +275,6 @@ footer {
             }
         }
 
-        .folder {
-            width: 100%;
-            display: inline-block;
-
-            span {
-                pointer-events: none;
-                user-select: none;
-            }
-        }
-
         section {
             &.opened {
                 height: 100%;
@@ -284,11 +284,11 @@ footer {
                 display: inline-block;
             }
         }
-
-        .pressed {
-            transform: rotate(90deg);
-        }
     }
+}
+
+.pressed {
+    transform: rotate(90deg);
 }
 
 .collapse-sign {
