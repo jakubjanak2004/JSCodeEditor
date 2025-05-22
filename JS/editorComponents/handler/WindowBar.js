@@ -25,7 +25,6 @@ export default class WindowBar extends Handler {
         this.windowBar.appendChild(closeButton);
         this.editorRow = EditorContainer.addNewWindowBar(this).textEditorRow;
 
-        // todo bugs the ghost visible as double click performed
         // setting the windowBar active
         this.windowBar.addEventListener("mousedown", () => {
             this.setActive();

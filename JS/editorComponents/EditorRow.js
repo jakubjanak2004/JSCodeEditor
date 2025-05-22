@@ -126,7 +126,7 @@ export default class EditorRow {
         }
     }
 
-    // todo comment
+    // react when selection is changed
     reactToSelectionChange() {
         console.log('react on selection being changed');
         const selection = window.getSelection();
@@ -154,6 +154,7 @@ export default class EditorRow {
         lineNumbers[nthLine].classList.add('selected');
     }
 
+    // count the number of previous elements
     countPreviousElements(element, className) {
         let count = 0;
         let sibling = element.previousElementSibling;
